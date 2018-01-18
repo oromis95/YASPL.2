@@ -10,6 +10,6 @@ public class BooleanType extends Type {
 
     @Override
     public String getRealName() {
-        return null;
+        return "";
     }
 }

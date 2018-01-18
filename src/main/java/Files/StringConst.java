@@ -2,7 +2,7 @@ package Files;
 
 import visitors.Visitor;
 
-public class FalseExpression extends BooleanExpression {
+public class StringConst extends Expression {
     @Override
     public <T, P> T accept(Visitor<T, P> visitor, P param) {
         return visitor.visit(this,param);
