@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.Iterator;
 
-public class SyntacticVisitor implements IVisitor<SemanticElement> {
+public class SyntacticVisitor implements Visitor<SemanticElement> {
     private String toWriteIntoFile;
 
     @Override
