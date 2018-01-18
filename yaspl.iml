@@ -13,10 +13,10 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: com.googlecode.jctree:jctree:2.0.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
+    <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka.thirdparty:java-cup-11b-runtime:2015.03.26" level="project" />
+    <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka.thirdparty:java-cup-11b:2015.03.26" level="project" />
     <orderEntry type="library" name="Maven: de.jflex:jflex:1.6.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.ant:ant:1.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.ant:ant-launcher:1.7.0" level="project" />
-    <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka.thirdparty:java-cup-11b-runtime:2015.03.26" level="project" />
-    <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka.thirdparty:java-cup-11b:2015.03.26" level="project" />
   </component>
 </module>

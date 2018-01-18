@@ -18,7 +18,7 @@ public abstract class CodeTree extends ArrayListTree<CodeTree>{
         super();
     }
 
-    public abstract <T, P> T accept(Visitor<T, P> visitor, P param);
+    public abstract <T, P> T accept(Visitor<T, P> visitor, P param); //Interface Visitable
     public abstract String getRealName();
 
     protected final <E> List<E> subTrees(Class<E> klass) {

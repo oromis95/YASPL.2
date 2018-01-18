@@ -1,6 +1,5 @@
 package visitors;
 
-import org.omg.CORBA.INTERNAL;
 
 public class Constants {
     public final static String

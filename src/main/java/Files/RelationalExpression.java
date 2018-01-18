@@ -1,15 +1,15 @@
 package Files;
 
-import visitors.Visitor;
 
-public class RelationalExpression extends BooleanExpression {
-    @Override
-    public <T, P> T accept(Visitor<T, P> visitor, P param) {
-        return null;
+public abstract class RelationalExpression extends BooleanExpression {
+    private BooleanExpression leftOperand;
+    private BooleanExpression rightOperand;
+
+    public BooleanExpression getLeftOperand() {
+        return leftOperand;
     }
 
-    @Override
-    public String getRealName() {
-        return null;
+    public BooleanExpression getRightOperand() {
+        return rightOperand;
     }
 }

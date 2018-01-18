@@ -1,6 +1,6 @@
 package visitors;
 
-import Files.Program;
+import Files.*;
 
 public interface Visitor<T,P> {
     T visit(Program programNode, P optionalParameter);
@@ -34,8 +34,8 @@ public interface Visitor<T,P> {
     T visit(NotExpression notExpressionNode, P additionalParameter);
     T visit(TrueExpression trueExpressionNode, P additionalParameter);
     T visit(FalseExpression falseExpressionNode, P additionalParameter);
-    T visit(GreatThanExpression greatThanExpressionNode, P additionalParameter);
-    T visit(GreatThanEqualExpression greatThanEqualExpression, P additionalParameter);
+    T visit(GreaterThanExpression greatThanExpressionNode, P additionalParameter);
+    T visit(GreaterThanEqualExpression greatThanEqualExpression, P additionalParameter);
     T visit(LessThanExpression lessThanExpression, P additionalParameter);
     T visit(LessThanEqualExpression lessThanEqualExpressionNode, P additionalParameter);
     T visit(EqualsExpression equalsExpressionNode, P additionalParameter);

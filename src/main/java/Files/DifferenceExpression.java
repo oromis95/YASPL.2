@@ -3,13 +3,17 @@ package Files;
 import visitors.Visitor;
 
 public class DifferenceExpression extends BinaryExpression{
+    public DifferenceExpression(Expression leftOperand, Expression rightOperand) {
+        super(leftOperand, rightOperand);
+    }
+
     @Override
     public <T, P> T accept(Visitor<T, P> visitor, P param) {
-        return null;
+        return visitor.visit(this,param);
     }
 
     @Override
     public String getRealName() {
-        return null;
+        return "DiffOp";
     }
 }
