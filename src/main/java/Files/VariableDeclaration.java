@@ -4,6 +4,10 @@ import visitors.Visitor;
 
 import java.util.List;
 
+/**
+ *@author - Tropeano Domenico Antonio on 20/01/2018
+ * A Tree node for the VariableDeclaration
+ */
 public class VariableDeclaration extends Decl {
     private final Type type;
     private final List<Variable> variables;

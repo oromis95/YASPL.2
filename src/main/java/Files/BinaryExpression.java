@@ -2,6 +2,10 @@ package Files;
 
 import visitors.Visitor;
 
+/**
+ * @author - Tropeano Domenico Antonio on 20/01/2018
+ *A Tree node for the Binary Expression. For example:
+ */
 public class BinaryExpression extends Expression {
     private final Expression leftOperand;
     private final Expression rightOperand;

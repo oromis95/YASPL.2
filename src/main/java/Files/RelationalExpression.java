@@ -3,6 +3,10 @@ package Files;
 
 import visitors.Visitor;
 
+/**
+ * @author - Tropeano Domenico Antonio on 20/01/2018
+ * A Tree node for the RelationalExpression
+ */
 public class RelationalExpression extends BooleanExpression {
     private Expression leftOperand, rightOperand;
     private final String relOp;

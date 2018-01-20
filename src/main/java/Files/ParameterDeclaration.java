@@ -5,6 +5,10 @@ import visitors.Visitor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author - Tropeano Domenico Antonio on 20/01/2018
+ * A Tree node for the ParameterDeclaration
+ */
 public class ParameterDeclaration extends CodeTree {
     private final List<VariableDeclaration> variableDeclarations;
 

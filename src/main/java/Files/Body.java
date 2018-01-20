@@ -4,6 +4,10 @@ import visitors.Visitor;
 
 import java.util.List;
 
+/**
+ * @author - Tropeano Domenico Antonio on 20/01/2018
+ * A Tree node for the Body
+ */
 public class Body extends CodeTree {
     private final List<VariableDeclaration> variableDeclarations;
     private final List<Statement> statements;

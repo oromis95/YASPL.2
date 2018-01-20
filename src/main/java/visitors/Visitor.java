@@ -2,6 +2,11 @@ package visitors;
 
 import Files.*;
 
+/**
+ * Visitor interface based on Visitor Pattern
+ * @param <T> is the node that must be saved
+ * @param <P> is an optional parameter
+ */
 public interface Visitor<T, P> {
     T visit(Program programNode, P optParam);
 

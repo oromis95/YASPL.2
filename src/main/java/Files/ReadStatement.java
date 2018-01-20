@@ -4,7 +4,10 @@ import visitors.Visitor;
 
 import java.util.List;
 
-
+/**
+ * @author - Tropeano Domenico Antonio on 20/01/2018
+ * A Tree node for the ReadStatement
+ */
 public class ReadStatement extends Statement {
 private final List<Variable> variables;
 private final List<Type> types;

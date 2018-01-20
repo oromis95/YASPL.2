@@ -2,6 +2,10 @@ package Files;
 
 import visitors.Visitor;
 
+/**
+ *@author - Tropeano Domenico Antonio on 20/01/2018
+ * A Tree node for the an assignment
+ */
 public class AssignStatement extends Statement {
     private final Identifier identifier;
     private final Expression expression;

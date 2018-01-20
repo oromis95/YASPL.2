@@ -4,6 +4,10 @@ import visitors.Visitor;
 
 import java.util.List;
 
+/**
+ *@author - Tropeano Domenico Antonio on 20/01/2018
+ * A Tree node for the WriteStatement
+ */
 public class WriteStatement extends Statement {
 private final List<Expression> expression;
 

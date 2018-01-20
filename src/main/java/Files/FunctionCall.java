@@ -4,6 +4,10 @@ import visitors.Visitor;
 
 import java.util.List;
 
+/**
+ * @author - Tropeano Domenico Antonio on 20/01/2018
+ * A Tree node for the FunctionCall
+ */
 public class FunctionCall extends Statement {
 private final Identifier identifier;
 private final List<Expression> expressions;

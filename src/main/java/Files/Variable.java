@@ -2,6 +2,10 @@ package Files;
 
 import visitors.Visitor;
 
+/**
+ *@author - Tropeano Domenico Antonio on 20/01/2018
+ * A Tree node for the Variable
+ */
 public class Variable extends CodeTree {
     private final Identifier identifier;
 

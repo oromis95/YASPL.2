@@ -15,18 +15,31 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 
+/**
+ * Syntax Visitor for YASPL2 based on Visitor pattern
+ */
 public class SyntaxVisitor implements Visitor<Element, Void> {
     private Document xmlDocument;
 
+    /**
+     * Constructor and creator of XML-document
+     */
     public SyntaxVisitor() {
         super();
         this.createDocument();
     }
 
+    /**
+     * Method to append the root of the tree
+     * @param el is the root of the tree
+     */
     public void appendRoot(Element el) {
         this.xmlDocument.appendChild(el);
     }
 
+    /**
+     * Method to create factory and builder for the XML-Document
+     */
     public void createDocument() {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         try {
@@ -37,6 +50,9 @@ public class SyntaxVisitor implements Visitor<Element, Void> {
         }
     }
 
+    /**
+     * Method to print the XML
+     */
     public void toXml() {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer;
