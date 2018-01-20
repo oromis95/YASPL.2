@@ -73,6 +73,10 @@ precedence left PLUS, MINUS;
 precedence right NOT;
 
 /* The grammar rules */
+
+
+/******************************************Program****************************************************/
+
 Programma ::= HEAD Decls:decls START Statements:stmts{:
                                                RESULT = new Program(decls, stmts);
                                                               SyntaxVisitor visitor = new SyntaxVisitor();
@@ -80,16 +84,31 @@ Programma ::= HEAD Decls:decls START Statements:stmts{:
                                                               visitor.toXml();
                                           :} ;
 
+
+/******************************************Decls****************************************************/
+
+
 Decls ::= Var_decl:var_decl Decls:decls {:decls.add(var_decl); RESULT = decls;:}
 		|Def_decl:def_decl Decls:decls {:decls.add(def_decl); RESULT = decls;:}
 		|/*epsilon*/ {: RESULT = new ArrayList<>(); :}
 		;
 
+
+/******************************************Statements*************************************************/
+
+
 Statements ::= Stat:s Statements:stmts {: stmts.add(s); RESULT = stmts ; :}
 			|Stat:s {: RESULT = new ArrayList<>(); RESULT.add(s); :}
 			;
 
+/******************************************Var_decl****************************************************/
+
+
 Var_decl ::= Type:type Vars:vars SEMI{: RESULT = new VariableDeclaration(type, vars); :};
+
+
+/******************************************Type****************************************************/
+
 
 Type ::= INT {: RESULT = new Type("integer"); :}
 		|BOOL {: RESULT = new Type("boolean"); :}
@@ -97,34 +116,70 @@ Type ::= INT {: RESULT = new Type("integer"); :}
 		|STRING {: RESULT = new Type("string"); :}
 		;
 
+
+/******************************************Vars****************************************************/
+
+
 Vars ::= NAME:name COMMA Vars:vars {: vars.add(new Variable(new Identifier(name))); RESULT = vars; :}
 		|NAME:name {: RESULT = new ArrayList<>(); RESULT.add(new Variable(new Identifier(name))); :}
 		;
 
+
+/******************************************Types****************************************************/
+
+
 Types ::= Type:type COMMA Types:types {: types.add(type); RESULT = types; :}
 		| Type:type {: RESULT = new ArrayList<>(); RESULT.add(type); :}
 		;
+
+
+/******************************************Def_decl****************************************************/
+
 
 Def_decl ::= DEF NAME:fname LPAR Var_decls:var_decls RPAR COLON Par_decls:par_decls Body:body
             {:
                 RESULT = new FunctionDeclaration(new Identifier(fname), var_decls, par_decls, body);
             :};
 
+
+/******************************************Var_decl****************************************************/
+
+
 Var_decls ::= Var_decl:vd Var_decls:vds {: vds.add(vd); RESULT = vds; :}
 			|/*epsilon*/ {: RESULT = new ArrayList<>(); :}
 			;
+
+
+/******************************************Par_decl****************************************************/
+
 
 Par_decls ::= Var_decl:vd Par_decls:pd {: pd.add(new ParameterDeclaration(vd)); RESULT = pd; :}
 			|Var_decl:vd {: RESULT = new ArrayList<>(); RESULT.add(new ParameterDeclaration(vd)); :}
 			;
 
+
+/******************************************Body****************************************************/
+
+
 Body ::= LGPAR Var_decls:vds Statements:stmts RGPAR SEMI {: RESULT = new Body(vds, stmts); :};
 
+
+/******************************************Comp_stat****************************************************/
+
+
 Comp_stat ::= LGPAR Statements:stmts RGPAR {: RESULT = new CompositeStatement(stmts); :} ;
+
+
+/******************************************Stat****************************************************/
+
 
 Stat ::= Comp_stat:cs {: RESULT = cs; :}
 		|Simple_stat:ss {: RESULT = ss; :}
 		;
+
+
+/******************************************Simple_stat****************************************************/
+
 
 Simple_stat ::= Vars:vs READ Types:tps SEMI  {: RESULT = new ReadStatement(vs, tps); :}
 			| Out_values:ov WRITE SEMI {: RESULT = new WriteStatement(ov); :}
@@ -141,15 +196,27 @@ Simple_stat ::= Vars:vs READ Types:tps SEMI  {: RESULT = new ReadStatement(vs, t
 			| WHILE LPAR Bool_expr:be RPAR DO Comp_stat:c1 SEMI {: RESULT = new WhileStatement(be, c1); :}
 			;
 
+
+/******************************************Out_values****************************************************/
+
+
 Out_values ::= Expr:expr COMMA Out_values:ov  {: ov.add(expr); RESULT = ov; :}
 			| STRING_CONST:sc COMMA Out_values:ov {: ov.add(new StringConst(sc)); RESULT = ov; :}
 			| Expr:expr {: RESULT = new ArrayList<>(); RESULT.add(expr); :}
 			| STRING_CONST:sc {: RESULT = new ArrayList<>(); RESULT.add(new StringConst(sc)); :}
 			;
 
+
+/******************************************Exprs****************************************************/
+
+
 Exprs ::= Expr:expr COMMA Exprs:exprs {: exprs.add(expr); RESULT = exprs; :}
 		|Expr:expr {: RESULT = new ArrayList<>(); RESULT.add(expr); :}
 		;
+
+
+/******************************************Expr****************************************************/
+
 
 Expr ::= INT_CONST:ic {: RESULT = new IntegerConst(ic); :}
 		|DOUBLE_CONST:dc {: RESULT = new DoubleConst(dc); :}
@@ -159,14 +226,26 @@ Expr ::= INT_CONST:ic {: RESULT = new IntegerConst(ic); :}
 		|LPAR Expr:expr RPAR {: RESULT = expr; :}
 		;
 
+
+/******************************************Func_exprs****************************************************/
+
+
 Func_exprs::= Exprs:exprs {: RESULT = new ArrayList<>(); RESULT.addAll(exprs); :}
 		|/*epsilon*/ {: RESULT = new ArrayList<>(); :}
 		;
+
+
+/******************************************Arith_op****************************************************/
+
 
 Arith_op ::= PLUS {: RESULT = "PLUS"; :}
             |MINUS {:RESULT = "MINUS"; :}
             |TIMES {:RESULT = "TIMES"; :}
             |DIV {:RESULT = "DIV"; :};
+
+
+/******************************************Bool_expr****************************************************/
+
 
 Bool_expr ::= TRUE {: RESULT = new TrueExpression(); :}
 			|FALSE {: RESULT = new FalseExpression(); :}
@@ -176,9 +255,17 @@ Bool_expr ::= TRUE {: RESULT = new TrueExpression(); :}
 			|LPAR Bool_expr:be RPAR {: RESULT = be; :}	/*Modifica Grammatica */
 			;
 
+
+/******************************************Bool_op****************************************************/
+
+
 Bool_op ::=  AND {: RESULT = "AND"; :}
             |OR {: RESULT = "OR"; :}
             ;
+
+
+/******************************************Rel_op****************************************************/
+
 
 Rel_op ::=  GT  {: RESULT = "GT"; :}
            |GE  {: RESULT = "GE"; :}
