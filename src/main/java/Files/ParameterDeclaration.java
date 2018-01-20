@@ -2,23 +2,28 @@ package Files;
 
 import visitors.Visitor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ParameterDeclaration extends CodeTree {
+    private final List<VariableDeclaration> variableDeclarations;
+
+    public ParameterDeclaration(List<VariableDeclaration> variableDeclarations) {
+        this.variableDeclarations = variableDeclarations;
+    }
+
+    public ParameterDeclaration(VariableDeclaration vd) {
+        this.variableDeclarations = new ArrayList<>();
+        this.variableDeclarations.add(vd);
+    }
+
+    public List<VariableDeclaration> getVariableDeclarations() {
+        return variableDeclarations;
+    }
+
     @Override
     public <T, P> T accept(Visitor<T, P> visitor, P param) {
-        return visitor.visit(this,param);
+        return visitor.visit(this, param);
     }
 
-    @Override
-    public String getRealName() {
-        return "ParDeclOp";
-    }
-    public List<VariableDeclaration> getVariableDeclarationList() {
-        return this.subTrees(VariableDeclaration.class);
-    }
-
-    public Identifier getIdentifier() {
-        return this.subTree(Identifier.class);
-    }
 }

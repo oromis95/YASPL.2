@@ -3,13 +3,17 @@ package Files;
 import visitors.Visitor;
 
 public class FalseExpression extends BooleanExpression {
-    @Override
-    public <T, P> T accept(Visitor<T, P> visitor, P param) {
-        return visitor.visit(this,param);
+    public FalseExpression() {
+        super();
+    }
+
+    public boolean getValue() {
+        return false;
     }
 
     @Override
-    public String getRealName() {
-        return "";
+    public <T, P> T accept(Visitor<T, P> visitor, P param) {
+        return visitor.visit(this, param);
     }
+
 }

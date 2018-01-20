@@ -3,14 +3,20 @@ package Files;
 import visitors.Visitor;
 
 public class IntegerConst extends Expression {
+    private final int intValue;
+
+    public IntegerConst(int intValue) {
+        this.intValue = intValue;
+    }
+
+    public int getIntValue() {
+        return intValue;
+    }
+
     @Override
     public <T, P> T accept(Visitor<T, P> visitor, P param) {
-        return visitor.visit(this,param);
+        return visitor.visit(this, param);
 
     }
 
-    @Override
-    public String getRealName() {
-        return "";
-    }
 }

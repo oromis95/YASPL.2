@@ -4,22 +4,25 @@ import visitors.Visitor;
 
 import java.util.List;
 
-public class VariableDeclaration extends CodeTree{
-    @Override
-    public <T, P> T accept(Visitor<T, P> visitor, P param) {
-        return visitor.visit(this, param);
-    }
+public class VariableDeclaration extends Decl {
+    private final Type type;
+    private final List<Variable> variables;
 
-    @Override
-    public String getRealName() {
-        return "VarDeclOp";
+    public VariableDeclaration(Type type, List<Variable> variables) {
+        this.type = type;
+        this.variables = variables;
     }
 
     public Type getType() {
-        return this.subTree(Type.class);
+        return type;
     }
 
     public List<Variable> getVariables() {
-        return this.subTrees(Variable.class);
+        return variables;
+    }
+
+    @Override
+    public <T, P> T accept(Visitor<T, P> visitor, P param) {
+        return visitor.visit(this, param);
     }
 }

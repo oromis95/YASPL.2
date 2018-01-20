@@ -3,13 +3,18 @@ package Files;
 import visitors.Visitor;
 
 public class DoubleConst extends Expression {
-    @Override
-    public <T, P> T accept(Visitor<T, P> visitor, P param) {
-        return visitor.visit(this,param);
+    private final double doubleValue;
+
+    public DoubleConst(double doubleValue) {
+        this.doubleValue = doubleValue;
+    }
+
+    public double getDoubleValue() {
+        return doubleValue;
     }
 
     @Override
-    public String getRealName() {
-        return "";
+    public <T, P> T accept(Visitor<T, P> visitor, P param) {
+        return visitor.visit(this,param);
     }
 }
