@@ -1,15 +1,18 @@
 package Files;
 
+import exception.ScopeException;
 import visitors.Visitor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author - Tropeano Domenico Antonio on 20/01/2018
  * A Tree node for the Program
  */
 public class Program extends CodeTree {
-
+    private HashMap<String, CodeTree> tableofSymbols;
     private final List<Decl> declarations;
     private final List<Statement> statements;
 
@@ -24,6 +27,22 @@ public class Program extends CodeTree {
 
     public List<Statement> getStatements() {
         return statements;
+    }
+
+    public void addToTos(String id, CodeTree Node) throws ScopeException {
+        if (tableofSymbols.put(id, Node) != null)
+            throw new ScopeException(id);
+
+    }
+
+    public CodeTree lookup(String id) {
+        return tableofSymbols.get(id);
+    }
+
+    public void printTOS() {
+        for (Map.Entry<String, CodeTree> entry : tableofSymbols.entrySet()) {
+            System.out.println(entry);
+        }
     }
 
     @Override
