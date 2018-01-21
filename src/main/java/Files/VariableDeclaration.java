@@ -12,9 +12,11 @@ public class VariableDeclaration extends Decl {
     private final Type type;
     private final List<Variable> variables;
 
+
     public VariableDeclaration(Type type, List<Variable> variables) {
         this.type = type;
         this.variables = variables;
+
     }
 
     public Type getType() {

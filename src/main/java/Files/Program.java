@@ -19,6 +19,7 @@ public class Program extends CodeTree {
     public Program(List<Decl> declarations, List<Statement> statements) {
         this.declarations = declarations;
         this.statements = statements;
+        tableofSymbols = new HashMap<>();
     }
 
     public List<Decl> getDeclarations() {

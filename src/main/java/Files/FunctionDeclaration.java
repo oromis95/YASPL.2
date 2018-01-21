@@ -23,6 +23,7 @@ public class FunctionDeclaration extends Decl {
         this.variableDeclarations = variableDeclarations;
         this.parameterDeclarations = parameterDeclarations;
         this.body = body;
+        tableofSymbols = new HashMap<>();
     }
 
     public Identifier getIdentifier() {
