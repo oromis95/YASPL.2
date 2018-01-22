@@ -4,6 +4,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 import java_cup.runtime.Symbol;
 import java.lang.*;
 import java.io.InputStreamReader;
+import visitors.lexical.*;
 
 %%
 
@@ -17,7 +18,7 @@ import java.io.InputStreamReader;
 %function next_token
 %{
 
-
+    private StringTable stringsTable=new StringTable();
     public Lexer(ComplexSymbolFactory sf, java.io.InputStream is){
 		this(new InputStreamReader(is));
         symbolFactory = sf;
@@ -31,13 +32,25 @@ import java.io.InputStreamReader;
 						new Location(yyline+1,yycolumn+1 - yylength()),
 						new Location(yyline+1,yycolumn+1)
 				);
+
     }
 
     public Symbol symbol(String name, int code, Object value){
-    return symbolFactory.newSymbol(name, code,
-    					new Location(yyline+1, yycolumn+1),
-    					new Location(yyline+1, yycolumn+yylength()), value);
-    }
+        Symbol symbol = symbolFactory.newSymbol(name, code,
+                new Location(yyline + 1, yycolumn + 1),
+                new Location(yyline + 1, yycolumn + yylength()), value);
+        ComplexSymbolFactory.ComplexSymbol complexSymbol = (ComplexSymbolFactory.ComplexSymbol) symbol;
+        if (stringsTable.containsKey(complexSymbol.value.toString())) {
+            stringsTable.get(complexSymbol.value.toString()).addLocation(complexSymbol);
+        } else {
+            stringsTable.put(complexSymbol.value.toString(), new EntryLexem(complexSymbol));
+        }
+
+        return complexSymbol;
+	}
+	public java.util.HashMap<String,EntryLexem> getStringsTable(){
+	    return stringsTable;
+	}
     protected void emit_warning(String message){
     	System.out.println("scanner warning: " + message + " at : 2 "+
     			(yyline+1) + " " + (yycolumn+1) + " " + yychar);

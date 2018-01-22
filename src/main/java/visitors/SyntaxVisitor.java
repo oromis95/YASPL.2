@@ -1,8 +1,8 @@
 package visitors;
 
-import Files.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import visitors.syntax.nodes.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -15,18 +15,31 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 
+/**
+ * Syntax Visitor for YASPL2 based on Visitor pattern
+ */
 public class SyntaxVisitor implements Visitor<Element, Void> {
     private Document xmlDocument;
 
+    /**
+     * Constructor and creator of XML-document
+     */
     public SyntaxVisitor() {
         super();
         this.createDocument();
     }
 
+    /**
+     * Method to append the root of the tree
+     * @param el is the root of the tree
+     */
     public void appendRoot(Element el) {
         this.xmlDocument.appendChild(el);
     }
 
+    /**
+     * Method to create factory and builder for the XML-Document
+     */
     public void createDocument() {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         try {
@@ -37,6 +50,9 @@ public class SyntaxVisitor implements Visitor<Element, Void> {
         }
     }
 
+    /**
+     * Method to print the XML
+     */
     public void toXml() {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer;
@@ -55,9 +71,10 @@ public class SyntaxVisitor implements Visitor<Element, Void> {
 
     @Override
     public Element visit(Program programNode, Void optParam) {
+        System.out.println("ProgramOp");
         Element el = this.xmlDocument.createElement("ProgramOp");
         programNode.getDeclarations().forEach(d -> el.appendChild(d.accept(this, optParam)));
-        programNode.getDeclarations().forEach(d -> el.appendChild(d.accept(this, optParam)));
+        programNode.getStatements().forEach(d -> el.appendChild(d.accept(this, optParam)));
         return el;
     }
 
@@ -71,6 +88,7 @@ public class SyntaxVisitor implements Visitor<Element, Void> {
 
     @Override
     public Element visit(FunctionDeclaration functionDeclarationNode, Void optParam) {
+        System.out.println("ProcDeclOp");
         Element el = this.xmlDocument.createElement("ProcDeclOp");
         el.setAttribute("name", functionDeclarationNode.getIdentifier().getName());
         functionDeclarationNode.getVariableDeclarations().forEach(v -> el.appendChild(v.accept(this, optParam)));
