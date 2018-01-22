@@ -1,6 +1,6 @@
 package visitors;
 
-import Files.*;
+import visitors.syntax.nodes.*;
 
 /**
  * Visitor interface based on Visitor Pattern

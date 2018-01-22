@@ -1,8 +1,8 @@
 package visitors;
 
-import Files.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import visitors.syntax.nodes.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

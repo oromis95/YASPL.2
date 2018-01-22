@@ -465,7 +465,7 @@ public class Lexer implements sym, java_cup.runtime.Scanner {
 
   /* user code: */
 
-    private java.util.HashMap<String,EntryLexem> stringsTable=new java.util.HashMap<>();
+    private StringTable stringsTable=new StringTable();
     public Lexer(ComplexSymbolFactory sf, java.io.InputStream is){
 		this(new InputStreamReader(is));
         symbolFactory = sf;
@@ -483,17 +483,17 @@ public class Lexer implements sym, java_cup.runtime.Scanner {
     }
 
     public Symbol symbol(String name, int code, Object value){
-        Symbol s=symbolFactory.newSymbol(name, code,
-                            new Location(yyline+1, yycolumn+1),
-                            new Location(yyline+1, yycolumn+yylength()), value);
-      ComplexSymbolFactory.ComplexSymbol needle=(ComplexSymbolFactory.ComplexSymbol)s;
-        if (stringsTable.containsKey(needle.value.toString())) {
-            stringsTable.get(needle.value.toString()).addLocation(needle);
+        Symbol symbol = symbolFactory.newSymbol(name, code,
+                new Location(yyline + 1, yycolumn + 1),
+                new Location(yyline + 1, yycolumn + yylength()), value);
+        ComplexSymbolFactory.ComplexSymbol complexSymbol = (ComplexSymbolFactory.ComplexSymbol) symbol;
+        if (stringsTable.containsKey(complexSymbol.value.toString())) {
+            stringsTable.get(complexSymbol.value.toString()).addLocation(complexSymbol);
         } else {
-            stringsTable.put(needle.value.toString(),new EntryLexem(needle) );
+            stringsTable.put(complexSymbol.value.toString(), new EntryLexem(complexSymbol));
         }
 
-        return s;
+        return complexSymbol;
 	}
 	public java.util.HashMap<String,EntryLexem> getStringsTable(){
 	    return stringsTable;

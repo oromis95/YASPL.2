@@ -5,8 +5,8 @@ import com.oromis.Lexer;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileInputStream;
-import Files.*;
 import visitors.*;
+import visitors.syntax.nodes.*;
 import java.util.List;
 import java.util.*;
 

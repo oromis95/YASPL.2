@@ -36,17 +36,17 @@ import visitors.lexical.*;
     }
 
     public Symbol symbol(String name, int code, Object value){
-        Symbol s=symbolFactory.newSymbol(name, code,
-                            new Location(yyline+1, yycolumn+1),
-                            new Location(yyline+1, yycolumn+yylength()), value);
-
-        if (stringsTable.containsKey(s.value.toString())) {
-            stringsTable.get(s.value.toString()).addLocation(s);
+        Symbol symbol = symbolFactory.newSymbol(name, code,
+                new Location(yyline + 1, yycolumn + 1),
+                new Location(yyline + 1, yycolumn + yylength()), value);
+        ComplexSymbolFactory.ComplexSymbol complexSymbol = (ComplexSymbolFactory.ComplexSymbol) symbol;
+        if (stringsTable.containsKey(complexSymbol.value.toString())) {
+            stringsTable.get(complexSymbol.value.toString()).addLocation(complexSymbol);
         } else {
-            stringsTable.put(s.value.toString(),new EntryLexem(s) );
+            stringsTable.put(complexSymbol.value.toString(), new EntryLexem(complexSymbol));
         }
 
-        return s;
+        return complexSymbol;
 	}
 	public java.util.HashMap<String,EntryLexem> getStringsTable(){
 	    return stringsTable;
