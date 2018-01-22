@@ -1,5 +1,7 @@
 package visitors;
 
+import visitors.semantic.exception.FunctionAlreadyDeclared;
+import visitors.semantic.exception.VariableAlreadyDeclared;
 import visitors.syntax.nodes.*;
 
 /**
@@ -10,9 +12,9 @@ import visitors.syntax.nodes.*;
 public interface Visitor<T, P> {
     T visit(Program programNode, P optParam);
 
-    T visit(VariableDeclaration variableDeclarationNode, P optParam);
+    T visit(VariableDeclaration variableDeclarationNode, P optParam) throws VariableAlreadyDeclared;
 
-    T visit(FunctionDeclaration functionDeclarationNode, P optParam);
+    T visit(FunctionDeclaration functionDeclarationNode, P optParam) throws FunctionAlreadyDeclared;
 
     T visit(Variable variableNode, P optParam);
 

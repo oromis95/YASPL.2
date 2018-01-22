@@ -1,4 +1,4 @@
-package exception;
+package visitors.semantic.exception;
 
 /**
  * Created by Gabriele on 14/01/2017.

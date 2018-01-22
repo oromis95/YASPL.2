@@ -18,7 +18,7 @@ import visitors.lexical.*;
 %function next_token
 %{
 
-    private java.util.HashMap<String,EntryLexem> stringsTable=new java.util.HashMap<>();
+    private StringTable stringsTable=new StringTable();
     public Lexer(ComplexSymbolFactory sf, java.io.InputStream is){
 		this(new InputStreamReader(is));
         symbolFactory = sf;

@@ -465,7 +465,7 @@ public class Lexer implements sym, java_cup.runtime.Scanner {
 
   /* user code: */
 
-    private StringTable stringsTable=new StringTable();
+    private java.util.HashMap<String,EntryLexem> stringsTable=new java.util.HashMap<>();
     public Lexer(ComplexSymbolFactory sf, java.io.InputStream is){
 		this(new InputStreamReader(is));
         symbolFactory = sf;
