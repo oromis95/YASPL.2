@@ -9,6 +9,7 @@ import visitors.Visitor;
 public class StringConst extends Expression {
     private String stringValue;
 
+
     public StringConst(String stringValue) {
         this.stringValue = stringValue;
     }
@@ -19,7 +20,7 @@ public class StringConst extends Expression {
 
     @Override
     public <T, P> T accept(Visitor<T, P> visitor, P param) {
-        return visitor.visit(this,param);
+        return visitor.visit(this, param);
     }
 
 }

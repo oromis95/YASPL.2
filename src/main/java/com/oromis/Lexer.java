@@ -6,6 +6,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 import java_cup.runtime.Symbol;
 import java.lang.*;
 import java.io.InputStreamReader;
+import visitors.lexical.*;
 
 
 /**
@@ -464,7 +465,7 @@ public class Lexer implements sym, java_cup.runtime.Scanner {
 
   /* user code: */
 
-
+    private java.util.HashMap<String,EntryLexem> stringsTable=new java.util.HashMap<>();
     public Lexer(ComplexSymbolFactory sf, java.io.InputStream is){
 		this(new InputStreamReader(is));
         symbolFactory = sf;
@@ -478,13 +479,25 @@ public class Lexer implements sym, java_cup.runtime.Scanner {
 						new Location(yyline+1,yycolumn+1 - yylength()),
 						new Location(yyline+1,yycolumn+1)
 				);
+
     }
 
     public Symbol symbol(String name, int code, Object value){
-    return symbolFactory.newSymbol(name, code,
-    					new Location(yyline+1, yycolumn+1),
-    					new Location(yyline+1, yycolumn+yylength()), value);
-    }
+        Symbol s=symbolFactory.newSymbol(name, code,
+                            new Location(yyline+1, yycolumn+1),
+                            new Location(yyline+1, yycolumn+yylength()), value);
+      ComplexSymbolFactory.ComplexSymbol needle=(ComplexSymbolFactory.ComplexSymbol)s;
+        if (stringsTable.containsKey(needle.value.toString())) {
+            stringsTable.get(needle.value.toString()).addLocation(needle);
+        } else {
+            stringsTable.put(needle.value.toString(),new EntryLexem(needle) );
+        }
+
+        return s;
+	}
+	public java.util.HashMap<String,EntryLexem> getStringsTable(){
+	    return stringsTable;
+	}
     protected void emit_warning(String message){
     	System.out.println("scanner warning: " + message + " at : 2 "+
     			(yyline+1) + " " + (yycolumn+1) + " " + yychar);

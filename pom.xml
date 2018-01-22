@@ -63,7 +63,7 @@
                                 <taskdef  name="cup"   classname="java_cup.anttask.CUPTask"  classpath="${cup}"  />
                                 <jflex  file="${project.build.sourceDirectory}\com\oromis\lexer.flex" destdir="${project.build.sourceDirectory}" />
                                 <cup srcfile="${project.build.sourceDirectory}\com\oromis\parser.cup" destdir="${project.build.sourceDirectory}"
-                                     parser="Parser" interface="true"/>
+                                     parser="Parser" interface="true" />
                             </target>
                         </configuration>
                         <goals>
