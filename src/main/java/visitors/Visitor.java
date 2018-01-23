@@ -1,20 +1,19 @@
 package visitors;
 
-import visitors.semantic.exception.FunctionAlreadyDeclared;
-import visitors.semantic.exception.VariableAlreadyDeclared;
 import visitors.syntax.nodes.*;
 
 /**
  * Visitor interface based on Visitor Pattern
+ *
  * @param <T> is the node that must be saved
  * @param <P> is an optional parameter
  */
 public interface Visitor<T, P> {
     T visit(Program programNode, P optParam);
 
-    T visit(VariableDeclaration variableDeclarationNode, P optParam) throws VariableAlreadyDeclared;
+    T visit(VariableDeclaration variableDeclarationNode, P optParam);
 
-    T visit(FunctionDeclaration functionDeclarationNode, P optParam) throws FunctionAlreadyDeclared;
+    T visit(FunctionDeclaration functionDeclarationNode, P optParam);
 
     T visit(Variable variableNode, P optParam);
 

@@ -3,10 +3,14 @@ package visitors.semantic;
 import visitors.Visitor;
 import visitors.lexical.EntryLexem;
 import visitors.lexical.StringTable;
-import visitors.semantic.exception.FunctionAlreadyDeclared;
+import visitors.semantic.exception.FunctionAlreadyDeclaredException;
+import visitors.semantic.exception.TypeMismatchException;
 import visitors.semantic.exception.VariableAlreadyDeclared;
 import visitors.syntax.nodes.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -33,34 +37,44 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
     }
 
     @Override
-    public EntrySymbol visit(VariableDeclaration variableDeclarationNode, EntrySymbol optParam) throws VariableAlreadyDeclared {
-        optParam.setType(variableDeclarationNode.getType().getTypeName());
-        optParam.setLocX(stringTable.get(optParam.getName()).getLocX());
-        optParam.setLocY(stringTable.get(optParam.getName()).getLocY());
+    public EntrySymbol visit(VariableDeclaration variableDeclarationNode, EntrySymbol optParam) {
         for (Variable v : variableDeclarationNode.getVariables()) {
+            optParam = new EntrySymbol();
+            optParam.setType(variableDeclarationNode.getType().getTypeName());
             optParam = v.accept(this, optParam);
-            if (stackOfTable.peek().containsKey(optParam.getName())) {
-                throw new VariableAlreadyDeclared("Already declared in these scope "
-                        + optParam.getLocX() + " " + optParam.getLocY());
-            } else if (stackOfTable.firstElement().containsKey(optParam.getName())) {
-                throw new VariableAlreadyDeclared("Already declared in these scope "
-                        + optParam.getLocX() + " " + optParam.getLocY());
-            } else {
-                stackOfTable.peek().put(optParam.getName(), optParam);
-            }
+            optParam.setLocX(stringTable.get(optParam.getName()).getLocX());
+            optParam.setLocY(stringTable.get(optParam.getName()).getLocY());
+            checkAlreadyDeclared(optParam);
         }
         return null;
     }
 
     @Override
-    public EntrySymbol visit(FunctionDeclaration functionDeclarationNode, EntrySymbol optParam) throws FunctionAlreadyDeclared {
+    public EntrySymbol visit(FunctionDeclaration functionDeclarationNode, EntrySymbol optParam) {
         String id = functionDeclarationNode.getIdentifier().getName();
-        if (stackOfTable.peek().containsKey(id) &&
-                stackOfTable.peek().get(id).getType().equals("func")) {
-            //funzione già dichiarata
-            throw new FunctionAlreadyDeclared("Already Declared");
-
+        EntrySymbol function = new EntrySymbol();
+        if (stackOfTable.peek().containsKey(id)) {
+            try {
+                throw new FunctionAlreadyDeclaredException("Already Declared");
+            } catch (FunctionAlreadyDeclaredException functionAlreadyDeclaredException) {
+                functionAlreadyDeclaredException.printStackTrace();
+            }
+        } else {
+            function.setName(id);
+            function.setType(Constants.FUNCTION);
+            function.setFunction();
+            stackOfTable.push(new SymbolTable());
+            for (VariableDeclaration vd : functionDeclarationNode.getVariableDeclarations()) {
+                function.addVariableType(vd.getType().getTypeName());
+                vd.accept(this, optParam);
+            }
+            for (ParameterDeclaration pd : functionDeclarationNode.getParameterDeclarations()) {
+                function = pd.accept(this, function);
+            }
+            stackOfTable.firstElement().put(function.getName(), function);
+            functionDeclarationNode.getBody().accept(this, optParam);
         }
+        return null;
     }
 
     @Override
@@ -85,17 +99,45 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(ParameterDeclaration parameterDeclarationNode, EntrySymbol optParam) {
-        return null;
+        EntrySymbol variable = new EntrySymbol();
+        for (VariableDeclaration vd : parameterDeclarationNode.getVariableDeclarations()) {
+            optParam.addParameterType(vd.getType().getTypeName());
+            variable.setType(vd.getType().getTypeName());
+            variable = vd.accept(this, variable);
+            variable.setLocX(stringTable.get(optParam.getName()).getLocX());
+            variable.setLocY(stringTable.get(optParam.getName()).getLocY());
+            checkAlreadyDeclared(variable);
+        }
+        return optParam;
     }
+
 
     @Override
     public EntrySymbol visit(Body bodyNode, EntrySymbol optParam) {
+        bodyNode.getVariableDeclarations().forEach(vd -> vd.accept(this, optParam));
+        bodyNode.getStatements().forEach(s -> s.accept(this, optParam));
         return null;
     }
 
     @Override
     public EntrySymbol visit(ReadStatement readStatementNode, EntrySymbol optParam) {
-        return null;
+        List<String> types = new ArrayList<>();
+        List<String> typesOfConstants=new ArrayList<>();
+        for (Type t : readStatementNode.getTypes()) {
+            types.add(t.getTypeName());
+        }
+        for (Variable v:readStatementNode.getVariables()) {
+            typesOfConstants.add(v.accept(this,optParam).getType());
+        }
+        if(types.equals(typesOfConstants)){
+
+        }else{
+            try {
+                throw new TypeMismatchException("Types Mismatch");
+            } catch (TypeMismatchException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -110,7 +152,7 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(CompositeStatement compositeStatementNode, EntrySymbol optParam) {
-        return null;
+        compositeStatementNode.getStatements().forEach(s -> s.accept(this, optParam));
     }
 
     @Override
@@ -177,4 +219,25 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
     public EntrySymbol visit(AssignStatement assignStatementNode, EntrySymbol optParam) {
         return null;
     }
+
+    private void checkAlreadyDeclared(EntrySymbol variable) {
+        if (stackOfTable.peek().containsKey(variable.getName())) {
+            try {
+                throw new VariableAlreadyDeclared("Already declared in these scope "
+                        + variable.getLocX() + " " + variable.getLocY());
+            } catch (VariableAlreadyDeclared variableAlreadyDeclared) {
+                variableAlreadyDeclared.printStackTrace();
+            }
+        } else if (stackOfTable.firstElement().containsKey(variable.getName())) {
+            try {
+                throw new VariableAlreadyDeclared("Already declared in global scope "
+                        + variable.getLocX() + " " + variable.getLocY());
+            } catch (VariableAlreadyDeclared variableAlreadyDeclared) {
+                variableAlreadyDeclared.printStackTrace();
+            }
+        } else {
+            stackOfTable.peek().put(variable.getName(), variable);
+        }
+    }
+
 }

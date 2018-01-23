@@ -2,7 +2,10 @@ package visitors.semantic;
 
 import java_cup.runtime.ComplexSymbolFactory;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Domenico Antonio Tropeano on 22/01/2018 at 15:36
@@ -11,10 +14,11 @@ import java.util.ArrayList;
 public class EntrySymbol {
     private String name;
     private String type;
-    private ArrayList<ComplexSymbolFactory.Location> locX=new ArrayList<>();
-    private ArrayList<ComplexSymbolFactory.Location> locY=new ArrayList<>();
-    private int dimension = -1;
-
+    private ArrayList<ComplexSymbolFactory.Location> locX = new ArrayList<>();
+    private ArrayList<ComplexSymbolFactory.Location> locY = new ArrayList<>();
+    private ArrayList<String> variableArrayType;
+    private ArrayList<String> parameterArrayType;
+    private boolean isFunction = false;
 
     public EntrySymbol() {
     }
@@ -26,9 +30,6 @@ public class EntrySymbol {
         this.locY = locY;
     }
 
-    public void setDimension(int dimension) {
-        this.dimension = dimension;
-    }
 
     public String getName() {
         return name;
@@ -46,9 +47,6 @@ public class EntrySymbol {
         return locY;
     }
 
-    public int getDimension() {
-        return dimension;
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -66,19 +64,48 @@ public class EntrySymbol {
         this.locY = locY;
     }
 
-    @Override
-    public String toString() {
-        return "EntrySymbol{" +
-                "name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", locX=" + locX +
-                ", locY=" + locY +
-                ", dimension=" + dimension +
-                '}';
+    public void setFunction() {
+        this.variableArrayType = new ArrayList<>();
+        this.parameterArrayType = new ArrayList<>();
+        isFunction = true;
+    }
+
+    public ArrayList<String> getVariableArrayFirm() {
+        return variableArrayType;
+    }
+
+    public ArrayList<String> getParameterArrayFirm() {
+        return parameterArrayType;
+    }
+
+    public void addVariableType(String type) {
+        variableArrayType.add(type);
+    }
+
+    public void addParameterType(String type) {
+        parameterArrayType.add(type);
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    public String toString() {
+        if (isFunction) {
+            return "EntrySymbol{" +
+                    "name='" + name + '\'' +
+                    ", type='" + type + '\'' +
+                    ", locX=" + locX +
+                    ", locY=" + locY +
+                    "is Function with " +
+                    "variableList " + variableArrayType +
+                    "parameterList " + parameterArrayType +
+                    '}';
+        } else {
+            return "EntrySymbol{" +
+                    "name='" + name + '\'' +
+                    ", type='" + type + '\'' +
+                    ", locX=" + locX +
+                    ", locY=" + locY +
+                    '}';
+        }
     }
+
 }

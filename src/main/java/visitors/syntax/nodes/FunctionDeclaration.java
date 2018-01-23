@@ -16,14 +16,12 @@ public class FunctionDeclaration extends Decl {
     private final List<VariableDeclaration> variableDeclarations;
     private final List<ParameterDeclaration> parameterDeclarations;
     private final Body body;
-    private HashMap<String, CodeTree> tableofSymbols;
 
     public FunctionDeclaration(Identifier identifier, List<VariableDeclaration> variableDeclarations, List<ParameterDeclaration> parameterDeclarations, Body body) {
         this.identifier = identifier;
         this.variableDeclarations = variableDeclarations;
         this.parameterDeclarations = parameterDeclarations;
         this.body = body;
-        tableofSymbols = new HashMap<>();
     }
 
     public Identifier getIdentifier() {
@@ -42,21 +40,7 @@ public class FunctionDeclaration extends Decl {
         return body;
     }
 
-    public void addToTos(String id, CodeTree Node) throws ScopeException {
-        if (tableofSymbols.put(id, Node) != null)
-            throw new ScopeException(id);
 
-    }
-
-    public CodeTree lookup(String id) {
-        return tableofSymbols.get(id);
-    }
-
-    public void printTOS() {
-        for (Map.Entry<String, CodeTree> entry : tableofSymbols.entrySet()) {
-            System.out.println(entry);
-        }
-    }
 
     @Override
     public <T, P> T accept(Visitor<T, P> visitor, P param) {
