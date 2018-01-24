@@ -3,11 +3,10 @@ package visitors.semantic;
 import visitors.Visitor;
 import visitors.lexical.EntryLexem;
 import visitors.lexical.StringTable;
-import visitors.semantic.exception.FunctionAlreadyDeclaredException;
-import visitors.semantic.exception.TypeMismatchException;
-import visitors.semantic.exception.VariableAlreadyDeclared;
+import visitors.semantic.exception.*;
 import visitors.syntax.nodes.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -122,51 +121,110 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
     @Override
     public EntrySymbol visit(ReadStatement readStatementNode, EntrySymbol optParam) {
         List<String> types = new ArrayList<>();
-        List<String> typesOfConstants=new ArrayList<>();
+        List<String> typesOfConstants = new ArrayList<>();
         for (Type t : readStatementNode.getTypes()) {
             types.add(t.getTypeName());
         }
-        for (Variable v:readStatementNode.getVariables()) {
-            typesOfConstants.add(v.accept(this,optParam).getType());
+        for (Variable v : readStatementNode.getVariables()) {
+            if (stackOfTable.peek().containsKey(v.getIdentifier().getName())) {
+                typesOfConstants.add(v.accept(this, optParam).getType());
+            } else {
+                try {
+                    throw new VariableNotDeclaredException(v.getIdentifier().getName() + " not declared yet");
+                } catch (VariableNotDeclaredException e) {
+                    e.printStackTrace();
+                }
+            }
+            continue;
         }
-        if(types.equals(typesOfConstants)){
+        if (types.equals(typesOfConstants)) {
 
-        }else{
+        } else {
             try {
                 throw new TypeMismatchException("Types Mismatch");
             } catch (TypeMismatchException e) {
                 e.printStackTrace();
             }
         }
+        return null;
     }
 
     @Override
     public EntrySymbol visit(WriteStatement writeStatementNode, EntrySymbol optParam) {
+        writeStatementNode.getExpression().forEach(e -> e.accept(this, optParam));
         return null;
     }
 
     @Override
     public EntrySymbol visit(FunctionCall functionCallNode, EntrySymbol optParam) {
-        return null;
+        ArrayList<String> exprType = new ArrayList<>();
+        ArrayList<String> varsType = new ArrayList<>();
+        EntrySymbol choosedFunction = null;
+        if (stackOfTable.firstElement().containsKey(functionCallNode.getIdentifier().getName())) {
+            choosedFunction = stackOfTable.firstElement().get(functionCallNode.getIdentifier().getName());
+        } else {
+            try {
+                throw new FunctionNotDeclaredException(functionCallNode.getIdentifier().getName());
+            } catch (FunctionNotDeclaredException e) {
+                e.printStackTrace();
+            }
+        }
+
+        for (Expression exp : functionCallNode.getExpressions()) {
+            optParam = exp.accept(this, optParam);
+            exprType.add(optParam.getType());
+            if (exprType.equals(choosedFunction.getVariableArrayFirm())) {
+                //Variables Match
+            } else {
+                try {
+                    throw new TypeMismatchException("Variables mismatch with function firm");
+                } catch (TypeMismatchException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        for (Variable v : functionCallNode.getVariables()) {
+            optParam = v.accept(this, optParam);
+            varsType.add(optParam.getType());
+            if (varsType.equals(choosedFunction.getParameterArrayFirm())) {
+                //Parameter Match
+            } else {
+                try {
+                    throw new TypeMismatchException("Parameter mismatch with function firm");
+                } catch (TypeMismatchException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;//CONTROLLARE SE FINITO
     }
 
     @Override
     public EntrySymbol visit(CompositeStatement compositeStatementNode, EntrySymbol optParam) {
         compositeStatementNode.getStatements().forEach(s -> s.accept(this, optParam));
+        return null;
     }
 
     @Override
     public EntrySymbol visit(WhileStatement whileStatementNode, EntrySymbol optParam) {
+        whileStatementNode.getBooleanExpression().accept(this, optParam);
+        whileStatementNode.getWhileStatement().accept(this, optParam);
         return null;
     }
 
     @Override
     public EntrySymbol visit(IfThenStatement ifThenStatementNode, EntrySymbol optParam) {
+        ifThenStatementNode.getIfCondition().accept(this,optParam);
+        ifThenStatementNode.getThenStatement().accept(this,optParam);
         return null;
     }
 
     @Override
     public EntrySymbol visit(IfThenElseStatement ifThenElseStatementNode, EntrySymbol optParam) {
+        ifThenElseStatementNode.getIfCondition().accept(this,optParam);
+        ifThenElseStatementNode.getThenStatement().accept(this,optParam);
+        ifThenElseStatementNode.getElseStatement().accept(this,optParam);
         return null;
     }
 
