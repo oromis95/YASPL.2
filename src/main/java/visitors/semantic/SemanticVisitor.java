@@ -4,11 +4,10 @@ import visitors.Visitor;
 import visitors.lexical.EntryLexem;
 import visitors.lexical.StringTable;
 import visitors.semantic.exception.*;
+import visitors.syntax.Entry;
 import visitors.syntax.nodes.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -18,7 +17,7 @@ import java.util.Stack;
  */
 public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
     private Stack<SymbolTable> stackOfTable;
-    private StringTable stringTable;
+    public static StringTable stringTable;
     private static final String emp = "";
 
     public SemanticVisitor(StringTable stringTable) {
@@ -26,6 +25,9 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
         this.stringTable = stringTable;
     }
 
+    public SemanticVisitor() {
+        this.stackOfTable = new Stack<>();
+    }
 
     @Override
     public EntrySymbol visit(Program programNode, EntrySymbol optParam) {
@@ -37,15 +39,33 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(VariableDeclaration variableDeclarationNode, EntrySymbol optParam) {
-        for (Variable v : variableDeclarationNode.getVariables()) {
-            optParam = new EntrySymbol();
-            optParam.setType(variableDeclarationNode.getType().getTypeName());
-            optParam = v.accept(this, optParam);
-            optParam.setLocX(stringTable.get(optParam.getName()).getLocX());
-            optParam.setLocY(stringTable.get(optParam.getName()).getLocY());
-            checkAlreadyDeclared(optParam);
+        int count = 0;
+        if (optParam.isParameter()) {
+            for (Variable v : variableDeclarationNode.getVariables()) {
+                count++;
+                optParam = v.accept(this, optParam);
+                if (stackOfTable.peek().containsKey(optParam.getName())) {
+                    try {
+                        throw new VariableNotDeclaredException("Parameter not found in function");
+                    } catch (VariableNotDeclaredException e) {
+                        System.out.println("Parameter not found in function");
+                    }
+                }
+            }
+        } else {
+            for (Variable v : variableDeclarationNode.getVariables()) {
+                optParam = new EntrySymbol();
+                optParam.setType(variableDeclarationNode.getType().getTypeName());
+                optParam = v.accept(this, optParam);
+                optParam.setLocX(stringTable.get(optParam.getName()).getLocX());
+                optParam.setLocY(stringTable.get(optParam.getName()).getLocY());
+                checkAlreadyDeclared(optParam);
+                count++;
+            }
         }
-        return null;
+        EntrySymbol needle = new EntrySymbol();
+        needle.setDim(count);
+        return needle;
     }
 
     @Override
@@ -73,6 +93,7 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
             stackOfTable.firstElement().put(function.getName(), function);
             functionDeclarationNode.getBody().accept(this, optParam);
         }
+        stackOfTable.pop();
         return null;
     }
 
@@ -102,10 +123,11 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
         for (VariableDeclaration vd : parameterDeclarationNode.getVariableDeclarations()) {
             optParam.addParameterType(vd.getType().getTypeName());
             variable.setType(vd.getType().getTypeName());
-            variable = vd.accept(this, variable);
-            variable.setLocX(stringTable.get(optParam.getName()).getLocX());
-            variable.setLocY(stringTable.get(optParam.getName()).getLocY());
-            checkAlreadyDeclared(variable);
+            variable.setParameter(true);
+            int count = vd.accept(this, variable).getDim();
+            for (int i = 0; i < count; i++) {
+                optParam.addParameterType(vd.getType().getTypeName());
+            }
         }
         return optParam;
     }
@@ -215,83 +237,142 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(IfThenStatement ifThenStatementNode, EntrySymbol optParam) {
-        ifThenStatementNode.getIfCondition().accept(this,optParam);
-        ifThenStatementNode.getThenStatement().accept(this,optParam);
+        ifThenStatementNode.getIfCondition().accept(this, optParam);
+        ifThenStatementNode.getThenStatement().accept(this, optParam);
         return null;
     }
 
     @Override
     public EntrySymbol visit(IfThenElseStatement ifThenElseStatementNode, EntrySymbol optParam) {
-        ifThenElseStatementNode.getIfCondition().accept(this,optParam);
-        ifThenElseStatementNode.getThenStatement().accept(this,optParam);
-        ifThenElseStatementNode.getElseStatement().accept(this,optParam);
+        ifThenElseStatementNode.getIfCondition().accept(this, optParam);
+        ifThenElseStatementNode.getThenStatement().accept(this, optParam);
+        ifThenElseStatementNode.getElseStatement().accept(this, optParam);
         return null;
     }
 
     @Override
     public EntrySymbol visit(BinaryExpression binaryExpressionNode, EntrySymbol optParam) {
-        return null;
+        String leftType = "";
+        String rightType = "";
+        EntrySymbol es = new EntrySymbol();
+        leftType = binaryExpressionNode.getLeftOperand().accept(this, optParam).getType();
+        rightType = binaryExpressionNode.getRightOperand().accept(this, optParam).getType();
+        if (rightType.equals(leftType)) {
+            es.setType(rightType);
+        } else if ((rightType.equals(Constants.DOUBLE) || rightType.equals(Constants.INTEGER)) &&
+                leftType.equals(Constants.DOUBLE) || leftType.equals(Constants.INTEGER)) {
+            es.setType(Constants.DOUBLE);
+        } else {
+            try {
+                throw new TypeMismatchException("(Binary Expression)Operation denied with this types ");
+            } catch (TypeMismatchException e) {
+                e.printStackTrace();
+            }
+        }
+        return es;
     }
 
     @Override
     public EntrySymbol visit(UminusExpression uminusExpressionNode, EntrySymbol optParam) {
-        return null;
+        optParam = uminusExpressionNode.getExpression().accept(this, optParam);
+        return optParam;
     }
 
     @Override
     public EntrySymbol visit(DoubleConst doubleConstNode, EntrySymbol optParam) {
-        return null;
+        optParam = new EntrySymbol();
+        optParam.setType(Constants.DOUBLE);
+        return optParam;
     }
 
     @Override
     public EntrySymbol visit(IntegerConst integerConstNode, EntrySymbol optParam) {
-        return null;
+        optParam = new EntrySymbol();
+        optParam.setType(Constants.INTEGER);
+        return optParam;
     }
 
     @Override
     public EntrySymbol visit(StringConst stringConstNode, EntrySymbol optParam) {
-        return null;
+        optParam = new EntrySymbol();
+        optParam.setType(Constants.STRING);
+        return optParam;
     }
 
     @Override
     public EntrySymbol visit(NotExpression notExpressionNode, EntrySymbol optParam) {
-        return null;
+        return notExpressionNode.getExpression().accept(this, optParam);
     }
 
     @Override
     public EntrySymbol visit(TrueExpression trueExpressionNode, EntrySymbol optParam) {
-        return null;
+        optParam = new EntrySymbol();
+        optParam.setType(Constants.BOOL);
+        return optParam;
     }
 
     @Override
     public EntrySymbol visit(FalseExpression falseExpressionNode, EntrySymbol optParam) {
-        return null;
+        optParam = new EntrySymbol();
+        optParam.setType(Constants.STRING);
+        return optParam;
     }
 
     @Override
     public EntrySymbol visit(RelationalExpression relationalExpressionNode, EntrySymbol optParam) {
-        return null;
+        String leftType = "";
+        String rightType = "";
+        leftType = relationalExpressionNode.getLeftOperand().accept(this, optParam).getType();
+        rightType = relationalExpressionNode.getRightOperand().accept(this, optParam).getType();
+        if (rightType.equals(leftType)) {
+
+        } else if ((rightType.equals(Constants.DOUBLE) || rightType.equals(Constants.INTEGER)) &&
+                leftType.equals(Constants.DOUBLE) || leftType.equals(Constants.INTEGER)) {
+
+        } else {
+            try {
+                throw new TypeMismatchException("(RelationalExpression)Operation denied with this types ");
+            } catch (TypeMismatchException e) {
+                e.printStackTrace();
+            }
+        }
+        EntrySymbol es = new EntrySymbol();
+        es.setType(Constants.BOOL);
+        return es;
     }
 
     @Override
     public EntrySymbol visit(AssignStatement assignStatementNode, EntrySymbol optParam) {
+        EntrySymbol currEntry = stackOfTable.peek().get(assignStatementNode.getIdentifier().getName());
+        EntrySymbol currExpr = stackOfTable.peek().get(assignStatementNode.getExpression().accept(this, optParam));
+        if (currEntry.getType().equals(currExpr.getType())) {
+
+        } else {
+            try {
+                throw new TypeMismatchException("Type Mismatch in assign statement");
+            } catch (TypeMismatchException e) {
+                e.printStackTrace();
+            }
+        }
         return null;
     }
 
     private void checkAlreadyDeclared(EntrySymbol variable) {
         if (stackOfTable.peek().containsKey(variable.getName())) {
             try {
-                throw new VariableAlreadyDeclared("Already declared in these scope "
+                throw new VariableAlreadyDeclared(variable.getName() + " already declared in these scope "
                         + variable.getLocX() + " " + variable.getLocY());
             } catch (VariableAlreadyDeclared variableAlreadyDeclared) {
-                variableAlreadyDeclared.printStackTrace();
+                System.out.println(variable.getName() + " already declared in these scope "
+                        + variable.getLocX() + " " + variable.getLocY());
             }
         } else if (stackOfTable.firstElement().containsKey(variable.getName())) {
             try {
-                throw new VariableAlreadyDeclared("Already declared in global scope "
+                throw new VariableAlreadyDeclared(variable.getName() + " already declared in global scope "
                         + variable.getLocX() + " " + variable.getLocY());
             } catch (VariableAlreadyDeclared variableAlreadyDeclared) {
-                variableAlreadyDeclared.printStackTrace();
+                System.out.println(variable.getName() + " already declared in global scope "
+                        + variable.getLocX() + " " + variable.getLocY());
             }
         } else {
             stackOfTable.peek().put(variable.getName(), variable);

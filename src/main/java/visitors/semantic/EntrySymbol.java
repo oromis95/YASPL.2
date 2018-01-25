@@ -18,7 +18,9 @@ public class EntrySymbol {
     private ArrayList<ComplexSymbolFactory.Location> locY = new ArrayList<>();
     private ArrayList<String> variableArrayType;
     private ArrayList<String> parameterArrayType;
+    private int dim = 0;
     private boolean isFunction = false;
+    private boolean isParameter = false;
 
     public EntrySymbol() {
     }
@@ -86,6 +88,18 @@ public class EntrySymbol {
         parameterArrayType.add(type);
     }
 
+    public int getDim() {
+        return dim;
+    }
+
+    public void setDim(int dim) {
+        this.dim = dim;
+    }
+
+    public boolean isParameter() {
+        return isParameter;
+    }
+
     @Override
     public String toString() {
         if (isFunction) {
@@ -106,6 +120,10 @@ public class EntrySymbol {
                     ", locY=" + locY +
                     '}';
         }
+    }
+
+    public void setParameter(boolean value) {
+        this.isParameter = value;
     }
 
 }
