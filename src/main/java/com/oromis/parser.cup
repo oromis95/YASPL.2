@@ -93,6 +93,8 @@ Programma ::= HEAD Decls:decls START Statements:stmts{:
                                                               visitor.toXml();
                                                               SemanticVisitor visitor1=new SemanticVisitor(this.lexer.getStringsTable());
                                                               visitor1.visit(RESULT,null);
+                                                              Stack<SymbolTable> stackOfTable=visitor1.getStackOfTable();
+
                                           :} ;
 
 

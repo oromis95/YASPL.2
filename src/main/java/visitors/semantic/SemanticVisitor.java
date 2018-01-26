@@ -20,6 +20,10 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
     public static StringTable stringTable;
     private static final String emp = "";
 
+    public Stack<SymbolTable> getStackOfTable() {
+        return stackOfTable;
+    }
+
     public SemanticVisitor(StringTable stringTable) {
         this.stackOfTable = new Stack<>();
         this.stringTable = stringTable;
@@ -96,6 +100,7 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
             stackOfTable.firstElement().put(function.getName(), function);
             functionDeclarationNode.getBody().accept(this, optParam);
         }
+        stackOfTable.firstElement().get(function.getName()).setInsideScope(stackOfTable.peek());
         stackOfTable.pop();
         return null;
     }
@@ -218,17 +223,17 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
         for (Variable v : functionCallNode.getVariables()) {
             optParam = v.accept(this, optParam);
-            optParam=stackOfTable.peek().get(optParam.getName());
+            optParam = stackOfTable.peek().get(optParam.getName());
             varsType.add(optParam.getType());
             if (varsType.equals(choosedFunction.getParameterArrayFirm())) {
                 //Parameter Match
             } else {
                 try {
                     throw new TypeMismatchException("Parameter mismatch with function firm \n"
-                    +"Expected "+ choosedFunction.getParameterArrayFirm()+" getted "+ varsType);
+                            + "Expected " + choosedFunction.getParameterArrayFirm() + " getted " + varsType);
                 } catch (TypeMismatchException e) {
                     System.out.println("Parameter mismatch with function firm \n"
-                            +"Expected "+ choosedFunction.getParameterArrayFirm()+" getted "+ varsType);
+                            + "Expected " + choosedFunction.getParameterArrayFirm() + " getted " + varsType);
                 }
             }
         }
