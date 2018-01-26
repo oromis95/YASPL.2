@@ -1,7 +1,7 @@
 head
 	int choice,intResult;
 	double doubleResult;
-	string operativeChoice;
+	int operativeChoice;
 
 	def addInt ( ) : int intSum;
 	{
@@ -133,13 +133,13 @@ while(true) do
 			operativeChoice<-int;
 			if(operativeChoice==0)then
 			{		
-				moltiplicationInt(:intResult); 
+				subtractionInt(:intResult);
 			}
 			else
 			{
 				if(operativeChoice==1)then
 				{
-					moltiplicationInt(:doubleResult); 
+					subtractionDouble(:doubleResult);
 				}
 				else
 				{
@@ -161,7 +161,7 @@ while(true) do
 				{
 					if(operativeChoice==1)then
 					{
-						moltiplicationInt(:doubleResult); 
+						moltiplicationDouble(:doubleResult);
 					}
 					else
 					{
@@ -177,13 +177,13 @@ while(true) do
 					operativeChoice<-int;
 					if(operativeChoice==0)then
 					{		
-						moltiplicationInt(:intResult); 
+						divisionInt(:intResult);
 					}
 					else
 					{
 						if(operativeChoice==1)then
 						{
-							moltiplicationInt(:doubleResult); 
+							divisionDouble(:doubleResult);
 						}
 						else
 						{

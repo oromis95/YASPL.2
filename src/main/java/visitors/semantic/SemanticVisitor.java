@@ -40,9 +40,11 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
     @Override
     public EntrySymbol visit(VariableDeclaration variableDeclarationNode, EntrySymbol optParam) {
         int count = 0;
-        if (optParam.isParameter()) {
+        if (optParam != null && optParam.isParameter()) {
+
             for (Variable v : variableDeclarationNode.getVariables()) {
                 count++;
+                optParam = new EntrySymbol();
                 optParam = v.accept(this, optParam);
                 if (stackOfTable.peek().containsKey(optParam.getName())) {
                     try {
@@ -52,6 +54,7 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
                     }
                 }
             }
+
         } else {
             for (Variable v : variableDeclarationNode.getVariables()) {
                 optParam = new EntrySymbol();
@@ -110,6 +113,9 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(Identifier identifierNode, EntrySymbol optParam) {
+       /* if(optParam==null){
+            optParam=new EntrySymbol();
+        }*/
         optParam.setName(identifierNode.getName());
         EntryLexem el = stringTable.get(identifierNode.getName());
         optParam.setLocX(el.getLocX());
@@ -125,7 +131,7 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
             variable.setType(vd.getType().getTypeName());
             variable.setParameter(true);
             int count = vd.accept(this, variable).getDim();
-            for (int i = 0; i < count; i++) {
+            for (int i = 1; i < count; i++) {
                 optParam.addParameterType(vd.getType().getTypeName());
             }
         }
@@ -149,7 +155,8 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
         }
         for (Variable v : readStatementNode.getVariables()) {
             if (stackOfTable.peek().containsKey(v.getIdentifier().getName())) {
-                typesOfConstants.add(v.accept(this, optParam).getType());
+
+                typesOfConstants.add(stackOfTable.peek().get(v.getIdentifier().getName()).getType());
             } else {
                 try {
                     throw new VariableNotDeclaredException(v.getIdentifier().getName() + " not declared yet");
@@ -165,7 +172,7 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
             try {
                 throw new TypeMismatchException("Types Mismatch");
             } catch (TypeMismatchException e) {
-                e.printStackTrace();
+                System.out.println("Types Mismatch");
             }
         }
         return null;
@@ -182,6 +189,9 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
         ArrayList<String> exprType = new ArrayList<>();
         ArrayList<String> varsType = new ArrayList<>();
         EntrySymbol choosedFunction = null;
+        if (optParam == null) {
+            optParam = new EntrySymbol();
+        }
         if (stackOfTable.firstElement().containsKey(functionCallNode.getIdentifier().getName())) {
             choosedFunction = stackOfTable.firstElement().get(functionCallNode.getIdentifier().getName());
         } else {
@@ -208,14 +218,17 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
         for (Variable v : functionCallNode.getVariables()) {
             optParam = v.accept(this, optParam);
+            optParam=stackOfTable.peek().get(optParam.getName());
             varsType.add(optParam.getType());
             if (varsType.equals(choosedFunction.getParameterArrayFirm())) {
                 //Parameter Match
             } else {
                 try {
-                    throw new TypeMismatchException("Parameter mismatch with function firm");
+                    throw new TypeMismatchException("Parameter mismatch with function firm \n"
+                    +"Expected "+ choosedFunction.getParameterArrayFirm()+" getted "+ varsType);
                 } catch (TypeMismatchException e) {
-                    e.printStackTrace();
+                    System.out.println("Parameter mismatch with function firm \n"
+                            +"Expected "+ choosedFunction.getParameterArrayFirm()+" getted "+ varsType);
                 }
             }
         }
@@ -255,8 +268,20 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
         String leftType = "";
         String rightType = "";
         EntrySymbol es = new EntrySymbol();
-        leftType = binaryExpressionNode.getLeftOperand().accept(this, optParam).getType();
-        rightType = binaryExpressionNode.getRightOperand().accept(this, optParam).getType();
+        EntrySymbol leftS, rightS;
+        optParam = new EntrySymbol();
+        leftS = binaryExpressionNode.getLeftOperand().accept(this, optParam);
+        rightS = binaryExpressionNode.getRightOperand().accept(this, optParam);
+        if (leftS == null || leftS.getType() == null) {
+            String id = binaryExpressionNode.getLeftOperand().accept(this, optParam).getName();
+            leftType = stackOfTable.peek().get(id).getType();
+        }
+        if (rightS == null || leftS.getType() == null) {
+            String id = binaryExpressionNode.getRightOperand().accept(this, optParam).getName();
+            boolean a = checkIsExestingInScope(id);
+            rightType = stackOfTable.peek().get(id).getType();
+        }
+
         if (rightType.equals(leftType)) {
             es.setType(rightType);
         } else if ((rightType.equals(Constants.DOUBLE) || rightType.equals(Constants.INTEGER)) &&
@@ -322,8 +347,20 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
     public EntrySymbol visit(RelationalExpression relationalExpressionNode, EntrySymbol optParam) {
         String leftType = "";
         String rightType = "";
+        if (optParam != null) {
+        } else {
+            optParam = new EntrySymbol();
+        }
         leftType = relationalExpressionNode.getLeftOperand().accept(this, optParam).getType();
+        if (leftType == null) {
+            String id = relationalExpressionNode.getLeftOperand().accept(this, optParam).getName();
+            leftType = stackOfTable.peek().get(id).getType();
+        }
         rightType = relationalExpressionNode.getRightOperand().accept(this, optParam).getType();
+        if (rightType == null) {
+            String id = relationalExpressionNode.getRightOperand().accept(this, optParam).getName();
+            rightType = stackOfTable.peek().get(id).getType();
+        }
         if (rightType.equals(leftType)) {
 
         } else if ((rightType.equals(Constants.DOUBLE) || rightType.equals(Constants.INTEGER)) &&
@@ -333,7 +370,7 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
             try {
                 throw new TypeMismatchException("(RelationalExpression)Operation denied with this types ");
             } catch (TypeMismatchException e) {
-                e.printStackTrace();
+                System.out.println("(RelationalExpression)Operation denied with this types " + leftType + " " + rightType);
             }
         }
         EntrySymbol es = new EntrySymbol();
@@ -344,14 +381,16 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
     @Override
     public EntrySymbol visit(AssignStatement assignStatementNode, EntrySymbol optParam) {
         EntrySymbol currEntry = stackOfTable.peek().get(assignStatementNode.getIdentifier().getName());
-        EntrySymbol currExpr = stackOfTable.peek().get(assignStatementNode.getExpression().accept(this, optParam));
-        if (currEntry.getType().equals(currExpr.getType())) {
+        String type = assignStatementNode.getExpression().accept(this, optParam).getType();
+        if (currEntry.getType().equals(type)) {
+
+        } else if (currEntry.getType().equals(Constants.DOUBLE) && type.equals(Constants.INTEGER)) {
 
         } else {
             try {
                 throw new TypeMismatchException("Type Mismatch in assign statement");
             } catch (TypeMismatchException e) {
-                e.printStackTrace();
+                System.out.println("Type Mismatch in assign statement");
             }
         }
         return null;
@@ -376,6 +415,22 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
             }
         } else {
             stackOfTable.peek().put(variable.getName(), variable);
+        }
+    }
+
+    public boolean checkIsExestingInScope(String id) {
+        if (stackOfTable.peek().containsKey(id)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean checkIsExistingGlobal(String id) {
+        if (stackOfTable.firstElement().containsKey(id)) {
+            return true;
+        } else {
+            return false;
         }
     }
 

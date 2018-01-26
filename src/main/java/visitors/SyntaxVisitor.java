@@ -71,7 +71,6 @@ public class SyntaxVisitor implements Visitor<Element, Void> {
 
     @Override
     public Element visit(Program programNode, Void optParam) {
-        System.out.println("ProgramOp");
         Element el = this.xmlDocument.createElement("ProgramOp");
         programNode.getDeclarations().forEach(d -> el.appendChild(d.accept(this, optParam)));
         programNode.getStatements().forEach(d -> el.appendChild(d.accept(this, optParam)));
@@ -88,7 +87,6 @@ public class SyntaxVisitor implements Visitor<Element, Void> {
 
     @Override
     public Element visit(FunctionDeclaration functionDeclarationNode, Void optParam) {
-        System.out.println("ProcDeclOp");
         Element el = this.xmlDocument.createElement("ProcDeclOp");
         el.setAttribute("name", functionDeclarationNode.getIdentifier().getName());
         functionDeclarationNode.getVariableDeclarations().forEach(v -> el.appendChild(v.accept(this, optParam)));
