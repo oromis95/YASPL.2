@@ -495,7 +495,7 @@ public class Lexer implements sym, java_cup.runtime.Scanner {
 
         return complexSymbol;
 	}
-	public java.util.HashMap<String,EntryLexem> getStringsTable(){
+	public StringTable getStringsTable(){
 	    return stringsTable;
 	}
     protected void emit_warning(String message){

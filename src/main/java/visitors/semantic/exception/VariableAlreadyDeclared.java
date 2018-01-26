@@ -5,7 +5,9 @@ package visitors.semantic.exception;
  * @project yaspl
  */
 public class VariableAlreadyDeclared extends Exception {
+
     public VariableAlreadyDeclared(String message) {
         super(message);
     }
+
 }

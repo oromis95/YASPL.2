@@ -9,10 +9,12 @@ import visitors.*;
 import visitors.syntax.nodes.*;
 import java.util.List;
 import java.util.*;
+import visitors.lexical.EntryLexem;
+import visitors.semantic.*;
 
 
 parser code {:
-  protected Lexer lexer;
+  public Lexer lexer;
 :}
 
 /* define how to connect to the scanner! */
@@ -29,7 +31,13 @@ init with {:
   lexer = new Lexer(f,fis);
   System.out.println("Ciao");
 :};
-scan with {: return lexer.next_token(); :};
+scan with {:
+   Symbol symbol = lexer.next_token();
+   if(symbol.sym == sym.EOF){
+    SemanticVisitor.stringTable=lexer.getStringsTable();
+   }
+   return symbol;
+:};
 
 /* Terminals (tokens returned by the scanner). */
 terminal String        HEAD, START, SEMI, INT, BOOL, DOUBLE, NAME, COMMA, DEF, LPAR, RPAR, COLON, LGPAR,
@@ -83,6 +91,8 @@ Programma ::= HEAD Decls:decls START Statements:stmts{:
                                                               SyntaxVisitor visitor = new SyntaxVisitor();
                                                               visitor.appendRoot(visitor.visit(RESULT, null));
                                                               visitor.toXml();
+                                                              SemanticVisitor visitor1=new SemanticVisitor(this.lexer.getStringsTable());
+                                                              visitor1.visit(RESULT,null);
                                           :} ;
 
 
