@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.*;
 import visitors.lexical.EntryLexem;
 import visitors.semantic.*;
+import visitors.codeGenerator.CodeVisitor;
+import java.io.PrintWriter;
 
 
 parser code {:
@@ -91,9 +93,14 @@ Programma ::= HEAD Decls:decls START Statements:stmts{:
                                                               SyntaxVisitor visitor = new SyntaxVisitor();
                                                               visitor.appendRoot(visitor.visit(RESULT, null));
                                                               visitor.toXml();
-                                                              SemanticVisitor visitor1=new SemanticVisitor(this.lexer.getStringsTable());
+                                                              SemanticVisitor visitor1=new SemanticVisitor(SemanticVisitor.stringTable);
                                                               visitor1.visit(RESULT,null);
                                                               Stack<SymbolTable> stackOfTable=visitor1.getStackOfTable();
+                                                              CodeVisitor visitor2=new CodeVisitor(stackOfTable);
+                                                              PrintWriter out = new PrintWriter("filename.c");
+                                                              out.println(visitor2.visit(RESULT,""));
+                                                              out.close();
+
 
                                           :} ;
 
@@ -123,8 +130,8 @@ Var_decl ::= Type:type Vars:vars SEMI{: RESULT = new VariableDeclaration(type, v
 /******************************************Type****************************************************/
 
 
-Type ::= INT {: RESULT = new Type("integer"); :}
-		|BOOL {: RESULT = new Type("boolean"); :}
+Type ::= INT {: RESULT = new Type("int"); :}
+		|BOOL {: RESULT = new Type("bool"); :}
 		|DOUBLE {: RESULT = new Type("double");:}
 		|STRING {: RESULT = new Type("string"); :}
 		;

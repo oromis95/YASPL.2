@@ -5,9 +5,9 @@ package visitors.semantic;
  * @project yaspl
  */
 public class Constants {
-    public static final String INTEGER = "integer";
+    public static final String INTEGER = "int";
     public static final String DOUBLE = "double";
-    public static final String BOOL = "boolean";
+    public static final String BOOL = "bool";
     public static final String STRING = "string";
     public static final String FUNCTION = "function";
 

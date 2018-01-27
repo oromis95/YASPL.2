@@ -101,7 +101,7 @@ head
 	}; 
 start
 
-"Scrivi il simbolo per effetture l'operazione decisa \n I simboli possibili sono :  0 Addizione 1 Sottrazione 2 Moltiplicazione 3 Divisione \n Inserica -1 per terminare" ->;
+"Scrivi il simbolo per effetture l'operazione decisa  I simboli possibili sono :  0 Addizione 1 Sottrazione 2 Moltiplicazione 3 Divisione Inserica -1 per terminare" ->;
 choice<-int;
 while(true) do 
 {

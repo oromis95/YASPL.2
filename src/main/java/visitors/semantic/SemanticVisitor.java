@@ -50,7 +50,7 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
                 count++;
                 optParam = new EntrySymbol();
                 optParam = v.accept(this, optParam);
-                if (stackOfTable.peek().containsKey(optParam.getName())) {
+                if (!stackOfTable.peek().containsKey(optParam.getName())) {
                     try {
                         throw new VariableNotDeclaredException("Parameter not found in function");
                     } catch (VariableNotDeclaredException e) {
@@ -94,11 +94,12 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
                 function.addVariableType(vd.getType().getTypeName());
                 vd.accept(this, optParam);
             }
+            functionDeclarationNode.getBody().accept(this, optParam);
+            /*********DA CONTROLLARE SEMANTICA COMPLESSA********/
             for (ParameterDeclaration pd : functionDeclarationNode.getParameterDeclarations()) {
                 function = pd.accept(this, function);
             }
             stackOfTable.firstElement().put(function.getName(), function);
-            functionDeclarationNode.getBody().accept(this, optParam);
         }
         stackOfTable.firstElement().get(function.getName()).setInsideScope(stackOfTable.peek());
         stackOfTable.pop();
@@ -344,7 +345,7 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
     @Override
     public EntrySymbol visit(FalseExpression falseExpressionNode, EntrySymbol optParam) {
         optParam = new EntrySymbol();
-        optParam.setType(Constants.STRING);
+        optParam.setType(Constants.BOOL);
         return optParam;
     }
 
