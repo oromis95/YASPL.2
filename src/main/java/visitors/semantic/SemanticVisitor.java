@@ -119,9 +119,9 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(Identifier identifierNode, EntrySymbol optParam) {
-       /* if(optParam==null){
+        if(optParam==null){
             optParam=new EntrySymbol();
-        }*/
+        }
         optParam.setName(identifierNode.getName());
         EntryLexem el = stringTable.get(identifierNode.getName());
         optParam.setLocX(el.getLocX());

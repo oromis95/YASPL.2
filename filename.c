@@ -16,12 +16,16 @@ void addInt(int* intSumOUT)
 int intAdded,intSum;
 intAdded = -99999;
 intSum = 0;
-while (!(intAdded == 0) )
-{
-printf("Inserisca un altro numero, inserisca zero se vuole finire" );
+printf("Somma di interi " );
+printf("Inserisca un numero. " );
 scanf("%d" ,&intAdded) ;
 
+while (!(intAdded == 0) )
+{
 intSum = intSum + intAdded;
+printf("Inserisca un altro numero, inserisca zero se vuole finire " );
+scanf("%d" ,&intAdded) ;
+
 
 }
 *intSumOUT=intSum;
@@ -32,12 +36,16 @@ void addDouble(double* doubleSumOUT)
 double doubleAdded,doubleSum;
 doubleAdded = -99999;
 doubleSum = 0;
-while (!(doubleAdded == 0) )
-{
-printf("Inserisca un altro numero, inserisca zero se vuole finire" );
+printf("Somma di double " );
+printf("Inserisca un numero. " );
 scanf("%lf" ,&doubleAdded) ;
 
+while (!(doubleAdded == 0) )
+{
 doubleSum = doubleSum + doubleAdded;
+printf("Inserisca un altro numero, inserisca zero se vuole finire " );
+scanf("%lf" ,&doubleAdded) ;
+
 
 }
 *doubleSumOUT=doubleSum;
@@ -48,12 +56,16 @@ void subtractionInt(int* intRemainderOUT)
 int intAmount,intRemainder;
 intAmount = -99999;
 intRemainder = 0;
-while (!(intAmount == 0) )
-{
-printf("Inserisca un altro numero, inserisca zero se vuole finire" );
+printf("Sottrazione di interi " );
+printf("Inserisca un numero. " );
 scanf("%d" ,&intAmount) ;
 
+while (!(intAmount == 0) )
+{
 intRemainder = intRemainder - intAmount;
+printf("Inserisca un altro numero, inserisca zero se vuole finire " );
+scanf("%d" ,&intAmount) ;
+
 
 }
 *intRemainderOUT=intRemainder;
@@ -64,12 +76,16 @@ void subtractionDouble(double* doubleRemainderOUT)
 double doubleAmount,doubleRemainder;
 doubleAmount = -99999;
 doubleRemainder = 0;
-while (!(doubleAmount == 0) )
-{
-printf("Inserisca un altro numero, inserisca zero se vuole finire" );
+printf("Sottrazione di Double " );
+printf("Inserisca un numero. " );
 scanf("%lf" ,&doubleAmount) ;
 
+while (!(doubleAmount == 0) )
+{
 doubleRemainder = doubleRemainder - doubleAmount;
+printf("Inserisca un altro numero, inserisca zero se vuole finire " );
+scanf("%lf" ,&doubleAmount) ;
+
 
 }
 *doubleRemainderOUT=doubleRemainder;
@@ -80,12 +96,16 @@ void moltiplicationInt(int* intProductOUT)
 int intMoltiplicator,intProduct;
 intMoltiplicator = -99999;
 intProduct = 1;
-while (!(intMoltiplicator == 0) )
-{
-printf("Inserisca un altro numero, inserisca zero se vuole finire" );
+printf("Moltiplicazione di interi " );
+printf("Inserisca un numero. " );
 scanf("%d" ,&intMoltiplicator) ;
 
+while (!(intMoltiplicator == 0) )
+{
 intProduct = intProduct * intMoltiplicator;
+printf("Inserisca un altro numero, inserisca zero se vuole finire " );
+scanf("%d" ,&intMoltiplicator) ;
+
 
 }
 *intProductOUT=intProduct;
@@ -96,12 +116,16 @@ void moltiplicationDouble(double* doubleProductOUT)
 double doubleMoltiplicator,doubleProduct;
 doubleMoltiplicator = -99999;
 doubleProduct = 1;
-while (!(doubleMoltiplicator == 0) )
-{
-printf("Inserisca un altro numero, inserisca zero se vuole finire" );
+printf("Moltiplicazione di double " );
+printf("Inserisca un numero. " );
 scanf("%lf" ,&doubleMoltiplicator) ;
 
+while (!(doubleMoltiplicator == 0) )
+{
 doubleProduct = doubleProduct * doubleMoltiplicator;
+printf("Inserisca un altro numero, inserisca zero se vuole finire " );
+scanf("%lf" ,&doubleMoltiplicator) ;
+
 
 }
 *doubleProductOUT=doubleProduct;
@@ -112,12 +136,16 @@ void divisionInt(int* intQuotientOUT)
 int intDivider,intQuotient;
 intDivider = -99999;
 intQuotient = 1;
-while (!(intDivider == 0) )
-{
-printf("Inserisca un altro numero, inserisca zero se vuole finire" );
+printf("Divisione di interi " );
+printf("Inserisca un numero. " );
 scanf("%d" ,&intDivider) ;
 
+while (!(intDivider == 0) )
+{
 intQuotient = intQuotient / intDivider;
+printf("Inserisca un altro numero, inserisca zero se vuole finire " );
+scanf("%d" ,&intDivider) ;
+
 
 }
 *intQuotientOUT=intQuotient;
@@ -128,69 +156,83 @@ void divisionDouble(double* doubleQuotientOUT)
 double doubleDivider,doubleQuotient;
 doubleDivider = -99999;
 doubleQuotient = 1;
-while (!(doubleDivider == 0) )
-{
-printf("Inserisca un altro numero, inserisca zero se vuole finire" );
+printf("Divisione di Double " );
+printf("Inserisca un numero. " );
 scanf("%lf" ,&doubleDivider) ;
 
+while (!(doubleDivider == 0) )
+{
 doubleQuotient = doubleQuotient / doubleDivider;
+printf("Inserisca un altro numero, inserisca zero se vuole finire " );
+scanf("%lf" ,&doubleDivider) ;
+
 
 }
 *doubleQuotientOUT=doubleQuotient;
 
 }
 
-int main(){printf("Scrivi il simbolo per effetture l'operazione decisa  I simboli possibili sono :  0 Addizione 1 Sottrazione 2 Moltiplicazione 3 Divisione Inserica -1 per terminare" );
+int main(){choice = 0;
+while (!(choice == -1) )
+{
+printf("Scrivi il simbolo per effetture l'operazione decisa  I simboli possibili sono :  0 Addizione 1 Sottrazione 2 Moltiplicazione 3 Divisione Inserica -1 per terminare " );
 scanf("%d" ,&choice) ;
 
-while (true)
-{
 if(choice == 0)
-{printf("Vuoi lavorare con interi o double? 0 per interi 1 per double" );
+{printf("Vuoi lavorare con interi o double? 0 per interi 1 per double " );
 scanf("%d" ,&operativeChoice) ;
 
 if(operativeChoice == 0)
 {addInt(&intResult);
-} else{if(operativeChoice == 1)
+printf("Risultato " );
+printf("%d",intResult) ;} else{if(operativeChoice == 1)
 {addDouble(&doubleResult);
-} else{printf("Comando non riconosciuto" );
+printf("Risultato " );
+printf("%f",doubleResult) ;} else{printf("Comando non riconosciuto " );
 } 
 } 
 } else{if(choice == 1)
-{printf("Vuoi lavorare con interi o double? INTERI per interi DOUBLE per double" );
+{printf("Vuoi lavorare con interi o double? INTERI per interi DOUBLE per double " );
 scanf("%d" ,&operativeChoice) ;
 
 if(operativeChoice == 0)
 {subtractionInt(&intResult);
-} else{if(operativeChoice == 1)
+printf("Risultato " );
+printf("%d",intResult) ;} else{if(operativeChoice == 1)
 {subtractionDouble(&doubleResult);
-} else{printf("Comando non riconosciuto" );
+printf("Risultato " );
+printf("%f",doubleResult) ;} else{printf("Comando non riconosciuto " );
 } 
 } 
 } else{if(choice == 2)
-{printf("Vuoi lavorare con interi o double? INTERI per interi DOUBLE per double" );
+{printf("Vuoi lavorare con interi o double? INTERI per interi DOUBLE per double " );
 scanf("%d" ,&operativeChoice) ;
 
 if(operativeChoice == 0)
 {moltiplicationInt(&intResult);
-} else{if(operativeChoice == 1)
+printf("Risultato " );
+printf("%d",intResult) ;} else{if(operativeChoice == 1)
 {moltiplicationDouble(&doubleResult);
-} else{printf("Comando non riconosciuto" );
+printf("Risultato " );
+printf("%f",doubleResult) ;} else{printf("Comando non riconosciuto " );
 } 
 } 
 } else{if(choice == 3)
-{printf("Vuoi lavorare con interi o double? INTERI per interi DOUBLE per double" );
+{printf("Vuoi lavorare con interi o double? INTERI per interi DOUBLE per double " );
 scanf("%d" ,&operativeChoice) ;
 
 if(operativeChoice == 0)
 {divisionInt(&intResult);
-} else{if(operativeChoice == 1)
+printf("Risultato " );
+printf("%d",intResult) ;} else{if(operativeChoice == 1)
 {divisionDouble(&doubleResult);
-} else{printf("Comando non riconosciuto" );
+printf("Risultato " );
+printf("%f",doubleResult) ;} else{printf("Comando non riconosciuto " );
 } 
 } 
 } else{if(choice == -1)
 {printf("finito" );
+} else{printf("Comando non riconosciuto " );
 } 
 } 
 } 
