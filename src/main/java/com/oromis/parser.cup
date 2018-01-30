@@ -23,7 +23,7 @@ parser code {:
 init with {:
   ComplexSymbolFactory f = new ComplexSymbolFactory();
   symbolFactory = f;
-  File file = new File(this.getClass().getResource("/input.txt").getFile());
+  File file = new File(this.getClass().getResource("/"+Driver.INPUT).getFile());
   FileInputStream fis = null;
   try {
     fis = new FileInputStream(file);
@@ -223,7 +223,6 @@ Simple_stat ::= Vars:vs READ Types:tps SEMI  {: RESULT = new ReadStatement(vs, t
 Out_values ::= Expr:expr COMMA Out_values:ov  {: ov.add(expr); RESULT = ov; :}
 			| STRING_CONST:sc COMMA Out_values:ov {: ov.add(new StringConst(sc)); RESULT = ov; :}
 			| Expr:expr {: RESULT = new ArrayList<>(); RESULT.add(expr); :}
-			| STRING_CONST:sc {: RESULT = new ArrayList<>(); RESULT.add(new StringConst(sc)); :}
 			;
 
 
@@ -240,6 +239,7 @@ Exprs ::= Expr:expr COMMA Exprs:exprs {: exprs.add(expr); RESULT = exprs; :}
 
 Expr ::= INT_CONST:ic {: RESULT = new IntegerConst(ic); :}
 		|DOUBLE_CONST:dc {: RESULT = new DoubleConst(dc); :}
+		|STRING_CONST:sc{:RESULT=new StringConst(sc);:}
 		|Expr:s1 Arith_op:op Expr:s2 {: RESULT = new BinaryExpression(s1, s2, op); :}
 		|NAME:name {: RESULT = new Identifier(name);:}
 		|MINUS Expr:expr  {: RESULT = new UminusExpression(expr); :} %prec UMINUS

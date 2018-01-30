@@ -41,15 +41,19 @@ public class CodeVisitor implements Visitor<String, String> {
     }
 
     private static String removeLastChar(String str) {
-        return str.substring(0, str.length() - 1);
+        if (str != "") {
+            return str.substring(0, str.length() - 1);
+        } else {
+            return str;
+        }
     }
 
     @Override
     public String visit(Program programNode, String optParam) {
         optParam += "#include<stdio.h>" +
                 NEWLINE + "#include <stdbool.h>" + NEWLINE + EMPTYFORPROTO + NEWLINE;
-        Collections.reverse(programNode.getDeclarations());
-        Collections.reverse(programNode.getStatements());
+        //Collections.reverse(programNode.getDeclarations());
+        //Collections.reverse(programNode.getStatements());
         for (Decl d : programNode.getDeclarations()) {
             optParam = d.accept(this, optParam);
         }
@@ -64,7 +68,7 @@ public class CodeVisitor implements Visitor<String, String> {
 
     @Override
     public String visit(VariableDeclaration variableDeclarationNode, String optParam) {
-        Collections.reverse(variableDeclarationNode.getVariables());
+        //Collections.reverse(variableDeclarationNode.getVariables());
         if (variableDeclarationNode.getType().equals(Constants.STRING)) {
             optParam += "char" + SPACE;
             for (Variable v : variableDeclarationNode.getVariables()) {
@@ -86,8 +90,8 @@ public class CodeVisitor implements Visitor<String, String> {
 
     @Override
     public String visit(FunctionDeclaration functionDeclarationNode, String optParam) {
-        Collections.reverse(functionDeclarationNode.getVariableDeclarations());
-        Collections.reverse(functionDeclarationNode.getParameterDeclarations());
+        //Collections.reverse(functionDeclarationNode.getVariableDeclarations());
+        //Collections.reverse(functionDeclarationNode.getParameterDeclarations());
         String functionID = functionDeclarationNode.getIdentifier().getName();
         EntrySymbol function = stackOfTable.firstElement().get(functionID);
         String proto = "";
@@ -107,12 +111,14 @@ public class CodeVisitor implements Visitor<String, String> {
             temp = vd.accept(this, temp);
             temp = removeLastChar(temp);
             temp = removeLastChar(temp);
-            temp.replace(COMMA, COMMA + vd.getType().getTypeName() + SPACE);
-            temp.replace(vd.getType().getTypeName(), vd.getType().getTypeName());
+            temp = temp.replace(COMMA, COMMA + vd.getType().getTypeName() + SPACE);
+            temp = temp.replace(vd.getType().getTypeName(), vd.getType().getTypeName());
         }
         optParam += temp;
         SymbolTable table = stackOfTable.firstElement().get(functionID).getInsideScope();
-        temp = "";
+        if (temp != "") {
+            temp = COMMA;
+        }
         for (ParameterDeclaration pm : functionDeclarationNode.getParameterDeclarations()) {
             for (VariableDeclaration vd : pm.getVariableDeclarations()) {
                 temp = vd.accept(this, temp);
@@ -163,8 +169,8 @@ public class CodeVisitor implements Visitor<String, String> {
 
     @Override
     public String visit(Body bodyNode, String optParam) {
-        Collections.reverse(bodyNode.getVariableDeclarations());
-        Collections.reverse(bodyNode.getStatements());
+        //Collections.reverse(bodyNode.getVariableDeclarations());
+        //Collections.reverse(bodyNode.getStatements());
         for (VariableDeclaration vd : bodyNode.getVariableDeclarations()) {
             optParam = vd.accept(this, optParam);
         }
@@ -176,8 +182,8 @@ public class CodeVisitor implements Visitor<String, String> {
 
     @Override
     public String visit(ReadStatement readStatementNode, String optParam) {
-        Collections.reverse(readStatementNode.getTypes());
-        Collections.reverse(readStatementNode.getVariables());
+        //Collections.reverse(readStatementNode.getTypes());
+        //Collections.reverse(readStatementNode.getVariables());
         String temp = "";
         for (Variable v : readStatementNode.getVariables()) {
             String thisType = stackOfTable.peek().get(v.getIdentifier().getName()).getType();
@@ -202,14 +208,14 @@ public class CodeVisitor implements Visitor<String, String> {
 
     @Override
     public String visit(WriteStatement writeStatementNode, String optParam) {
-        Collections.reverse(writeStatementNode.getExpression());
+        //Collections.reverse(writeStatementNode.getExpression());
         String temp = "";
         for (Expression e : writeStatementNode.getExpression()) {
             String content = e.accept(this, "");
             if (content.matches("-?\\d+")) {
-                temp = "printf(\"%d\"," + content + ") ;";
+                temp = "printf(\"%d\\n\"," + content + " ) ;";
             } else if (content.matches("^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?$")) {
-                temp = "printf(\"%lf\"," + content + ") ;";
+                temp = "printf(\"%lf\\n\"," + content + ") ;";
             } else if (checkIsExestingInScope(content)) {
                 String type = stackOfTable.peek().get(content).getType();
                 temp = getStuffFromSymbolTable(temp, content, type);
@@ -217,7 +223,7 @@ public class CodeVisitor implements Visitor<String, String> {
                 String type = stackOfTable.firstElement().get(content).getType();
                 temp = getStuffFromSymbolTable(temp, content, type);
             } else {
-                temp = "printf(\"" + content + "\" );" + NEWLINE;
+                temp = "printf(\"" + content + "\\n\" );" + NEWLINE;
             }
         }
         optParam += temp;
@@ -226,11 +232,11 @@ public class CodeVisitor implements Visitor<String, String> {
 
     private String getStuffFromSymbolTable(String temp, String content, String type) {
         if (type.equals(Constants.INTEGER)) {
-            temp = "printf(\"%d\"," + content + ") ;";
+            temp = "printf(\"%d\\n\"," + content + ") ;";
         } else if (type.equals(Constants.DOUBLE)) {
-            temp = "printf(\"%f\"," + content + ") ;";
+            temp = "printf(\"%f\\n\"," + content + ") ;";
         } else if (type.equals(Constants.STRING)) {
-            temp = "printf(\"%s\"," + content + ") ;";
+            temp = "printf(\"%s\\n\"," + content + ") ;";
         } else {
             System.out.println("ERRORE DI STAMPA");
         }
@@ -239,12 +245,12 @@ public class CodeVisitor implements Visitor<String, String> {
 
     @Override
     public String visit(FunctionCall functionCallNode, String optParam) {
-        Collections.reverse(functionCallNode.getVariables());
-        Collections.reverse(functionCallNode.getExpressions());
+        //Collections.reverse(functionCallNode.getVariables());
+        //Collections.reverse(functionCallNode.getExpressions());
         String id = functionCallNode.getIdentifier().getName();
         String temp = "";
         for (Expression e : functionCallNode.getExpressions()) {
-            temp += e.accept(this, optParam) + COMMA;
+            temp = e.accept(this, temp) + COMMA;
         }
         for (Variable v : functionCallNode.getVariables()) {
             temp += "&" + v.getIdentifier().getName() + COMMA;
@@ -256,7 +262,7 @@ public class CodeVisitor implements Visitor<String, String> {
 
     @Override
     public String visit(CompositeStatement compositeStatementNode, String optParam) {
-        Collections.reverse(compositeStatementNode.getStatements());
+        //Collections.reverse(compositeStatementNode.getStatements());
         for (Statement s : compositeStatementNode.getStatements()) {
             optParam = s.accept(this, optParam); //PROBABILE CAUSA DI ERRORI
         }

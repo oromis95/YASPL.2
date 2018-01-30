@@ -41,10 +41,11 @@ head
  		intRemainder=0;
  		"Sottrazione di interi "->;
  		"Inserisca un numero. "->;
-         intAmount <- int;
+ 		intRemainder<-int;
+        intAmount <- int;
 		while(not(intAmount==0)) do
 		{
-		    intRemainder=intRemainder-intAmount;
+		    intRemainder = intRemainder-intAmount;
  			"Inserisca un altro numero, inserisca zero se vuole finire " ->;
  			intAmount<- int;
 		};
@@ -56,6 +57,7 @@ head
  		doubleRemainder=0;
  		"Sottrazione di Double "->;
  		"Inserisca un numero. "->;
+ 		doubleRemainder <- double;
         doubleAmount <- double;
 		while(not(doubleAmount==0)) do
 		{
@@ -100,8 +102,9 @@ head
 		intDivider=-99999;
 		intQuotient=1;
 		"Divisione di interi "->;
- 		"Inserisca un numero. "->;
-         intDivider <- int;
+ 		"Inserisca dividendo e divisore."->;
+ 		intQuotient<-int;
+        intDivider <- int;
 		while(not(intDivider==0)) do
 		{
 		    intQuotient=intQuotient/intDivider;
@@ -115,7 +118,8 @@ head
 		doubleDivider=-99999;
 		doubleQuotient=1;
 		"Divisione di Double "->;
- 		"Inserisca un numero. "->;
+ 		"Inserisca dividendo e divisore. "->;
+ 		 doubleQuotient <- double;
          doubleDivider <- double;
 		while(not(doubleDivider==0)) do
 		{

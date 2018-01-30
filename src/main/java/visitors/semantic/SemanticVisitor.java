@@ -8,6 +8,7 @@ import visitors.syntax.Entry;
 import visitors.syntax.nodes.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -35,6 +36,8 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(Program programNode, EntrySymbol optParam) {
+        Collections.reverse(programNode.getDeclarations());
+        Collections.reverse(programNode.getStatements());
         stackOfTable.add(new SymbolTable());
         programNode.getDeclarations().forEach(d -> d.accept(this, optParam));
         programNode.getStatements().forEach(s -> s.accept(this, optParam));
@@ -43,6 +46,7 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(VariableDeclaration variableDeclarationNode, EntrySymbol optParam) {
+        Collections.reverse(variableDeclarationNode.getVariables());
         int count = 0;
         if (optParam != null && optParam.isParameter()) {
 
@@ -77,6 +81,8 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(FunctionDeclaration functionDeclarationNode, EntrySymbol optParam) {
+        Collections.reverse(functionDeclarationNode.getVariableDeclarations());
+        Collections.reverse(functionDeclarationNode.getParameterDeclarations());
         String id = functionDeclarationNode.getIdentifier().getName();
         EntrySymbol function = new EntrySymbol();
         if (stackOfTable.peek().containsKey(id)) {
@@ -91,7 +97,9 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
             function.setFunction();
             stackOfTable.push(new SymbolTable());
             for (VariableDeclaration vd : functionDeclarationNode.getVariableDeclarations()) {
-                function.addVariableType(vd.getType().getTypeName());
+                for (Variable v : vd.getVariables()) {
+                    function.addVariableType(vd.getType().getTypeName());
+                }
                 vd.accept(this, optParam);
             }
             functionDeclarationNode.getBody().accept(this, optParam);
@@ -119,8 +127,8 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(Identifier identifierNode, EntrySymbol optParam) {
-        if(optParam==null){
-            optParam=new EntrySymbol();
+        if (optParam == null) {
+            optParam = new EntrySymbol();
         }
         optParam.setName(identifierNode.getName());
         EntryLexem el = stringTable.get(identifierNode.getName());
@@ -131,6 +139,7 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(ParameterDeclaration parameterDeclarationNode, EntrySymbol optParam) {
+        Collections.reverse(parameterDeclarationNode.getVariableDeclarations());
         EntrySymbol variable = new EntrySymbol();
         for (VariableDeclaration vd : parameterDeclarationNode.getVariableDeclarations()) {
             optParam.addParameterType(vd.getType().getTypeName());
@@ -147,6 +156,8 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(Body bodyNode, EntrySymbol optParam) {
+        Collections.reverse(bodyNode.getVariableDeclarations());
+        Collections.reverse(bodyNode.getStatements());
         bodyNode.getVariableDeclarations().forEach(vd -> vd.accept(this, optParam));
         bodyNode.getStatements().forEach(s -> s.accept(this, optParam));
         return null;
@@ -154,6 +165,8 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(ReadStatement readStatementNode, EntrySymbol optParam) {
+        Collections.reverse(readStatementNode.getTypes());
+        Collections.reverse(readStatementNode.getVariables());
         List<String> types = new ArrayList<>();
         List<String> typesOfConstants = new ArrayList<>();
         for (Type t : readStatementNode.getTypes()) {
@@ -186,12 +199,15 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(WriteStatement writeStatementNode, EntrySymbol optParam) {
+        Collections.reverse(writeStatementNode.getExpression());
         writeStatementNode.getExpression().forEach(e -> e.accept(this, optParam));
         return null;
     }
 
     @Override
     public EntrySymbol visit(FunctionCall functionCallNode, EntrySymbol optParam) {
+        Collections.reverse(functionCallNode.getVariables());
+        Collections.reverse(functionCallNode.getExpressions());
         ArrayList<String> exprType = new ArrayList<>();
         ArrayList<String> varsType = new ArrayList<>();
         EntrySymbol choosedFunction = null;
@@ -210,21 +226,27 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
         for (Expression exp : functionCallNode.getExpressions()) {
             optParam = exp.accept(this, optParam);
+            if (optParam.getType() == null) {
+                optParam = stackOfTable.peek().get(optParam.getName());
+            }
             exprType.add(optParam.getType());
-            if (exprType.equals(choosedFunction.getVariableArrayFirm())) {
-                //Variables Match
-            } else {
-                try {
-                    throw new TypeMismatchException("Variables mismatch with function firm");
-                } catch (TypeMismatchException e) {
-                    e.printStackTrace();
-                }
+        }
+        if (exprType.equals(choosedFunction.getVariableArrayFirm())) {
+            //Variables Match
+        } else {
+            try {
+                throw new TypeMismatchException("Variables mismatch with function firm");
+            } catch (TypeMismatchException e) {
+                e.printStackTrace();
             }
         }
 
         for (Variable v : functionCallNode.getVariables()) {
             optParam = v.accept(this, optParam);
             optParam = stackOfTable.peek().get(optParam.getName());
+            if (optParam == null) {
+                System.out.println();
+            }
             varsType.add(optParam.getType());
             if (varsType.equals(choosedFunction.getParameterArrayFirm())) {
                 //Parameter Match
@@ -243,6 +265,7 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
     @Override
     public EntrySymbol visit(CompositeStatement compositeStatementNode, EntrySymbol optParam) {
+        Collections.reverse(compositeStatementNode.getStatements());
         compositeStatementNode.getStatements().forEach(s -> s.accept(this, optParam));
         return null;
     }
@@ -281,11 +304,20 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
         if (leftS == null || leftS.getType() == null) {
             String id = binaryExpressionNode.getLeftOperand().accept(this, optParam).getName();
             leftType = stackOfTable.peek().get(id).getType();
+        } else {
+            leftType = leftS.getType();
         }
-        if (rightS == null || leftS.getType() == null) {
+        if (rightS == null || rightS.getType() == null) {
             String id = binaryExpressionNode.getRightOperand().accept(this, optParam).getName();
             boolean a = checkIsExestingInScope(id);
-            rightType = stackOfTable.peek().get(id).getType();
+            if (a) {
+                rightType = stackOfTable.peek().get(id).getType();
+            } else {
+                rightType = stackOfTable.firstElement().get(id).getType();
+            }
+
+        } else {
+            rightType = rightS.getType();
         }
 
         if (rightType.equals(leftType)) {
@@ -387,10 +419,13 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
     @Override
     public EntrySymbol visit(AssignStatement assignStatementNode, EntrySymbol optParam) {
         EntrySymbol currEntry = stackOfTable.peek().get(assignStatementNode.getIdentifier().getName());
-        String type = assignStatementNode.getExpression().accept(this, optParam).getType();
-        if (currEntry.getType().equals(type)) {
+        EntrySymbol otherEntry = assignStatementNode.getExpression().accept(this, optParam);
+        if (otherEntry.getType() == null) {
+            otherEntry = stackOfTable.peek().get(otherEntry.getName());
+        }
+        if (currEntry.getType().equals(otherEntry.getType())) {
 
-        } else if (currEntry.getType().equals(Constants.DOUBLE) && type.equals(Constants.INTEGER)) {
+        } else if (currEntry.getType().equals(Constants.DOUBLE) && otherEntry.getType().equals(Constants.INTEGER)) {
 
         } else {
             try {
