@@ -5,6 +5,7 @@ import org.w3c.dom.Element;
 import visitors.Visitor;
 import visitors.nodes.*;
 
+import javax.sound.sampled.BooleanControl;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -258,7 +259,13 @@ public class SyntaxVisitor implements Visitor<Element, Void> {
     public Element visit(AssignStatement assignStatementNode, Void optParam) {
         Element el = this.xmlDocument.createElement("AssignOp");
         el.appendChild(assignStatementNode.getIdentifier().accept(this, optParam));
-        el.appendChild(assignStatementNode.getExpression().accept(this, optParam));
+        Element e=assignStatementNode.getExpression().accept(this, optParam);
+        if(e instanceof BooleanExpression){
+            el.appendChild(e); //quii
+        }else{
+            el.appendChild(e);
+        }
+
         return el;
     }
     /* */

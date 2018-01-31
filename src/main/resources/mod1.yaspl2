@@ -1,0 +1,9 @@
+head
+bool b,a1,a2,c,f;
+start
+a1=true;
+a2=false;
+b = a1 || a2;
+c = 10 > 5;
+f= c && b;
+f->;

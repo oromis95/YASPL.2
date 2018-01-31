@@ -186,10 +186,10 @@ public class CodeVisitor implements Visitor<String, String> {
         String temp = "";
         for (Variable v : readStatementNode.getVariables()) {
             String thisType;
-            if(checkIsExestingInScope(v.getIdentifier().getName())) {
-                thisType= stackOfTable.peek().get(v.getIdentifier().getName()).getType();
-            }else {
-                thisType= stackOfTable.firstElement().get(v.getIdentifier().getName()).getType();
+            if (checkIsExestingInScope(v.getIdentifier().getName())) {
+                thisType = stackOfTable.peek().get(v.getIdentifier().getName()).getType();
+            } else {
+                thisType = stackOfTable.firstElement().get(v.getIdentifier().getName()).getType();
             }
             if (thisType.equals(Constants.INTEGER))
                 temp = "scanf(\"%d\" ,&" + v.getIdentifier().getName() + ") ;";
@@ -241,6 +241,8 @@ public class CodeVisitor implements Visitor<String, String> {
             temp = "printf(\"%f\\n\"," + content + ") ;";
         } else if (type.equals(Constants.STRING)) {
             temp = "printf(\"%s\\n\"," + content + ") ;";
+        } else if (type.equals(Constants.BOOL)) {
+            temp = "printf(\"%d\\n\"," + content + ") ;";
         } else {
             System.out.println("ERRORE DI STAMPA");
         }
@@ -406,7 +408,10 @@ public class CodeVisitor implements Visitor<String, String> {
                 return " <= ";
             case "EQ":
                 return " == ";
-
+            case "AND":
+                return "&&";
+            case "OR":
+                return "||";
             default:
                 return "ERRORRELOP";
         }

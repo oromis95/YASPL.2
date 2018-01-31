@@ -129,8 +129,8 @@ Identifier = [:jletter:] [:jletterdigit:]* /*identifier must start with a letter
 	"<" { return symbol("LT", sym.LT); }
 	"==" { return symbol("EQ", sym.EQ); }
 	"not" { return symbol("NOT", sym.NOT); }
-	"&&" { return symbol("PLUS", sym.PLUS); }
-	"||" { return symbol("PLUS", sym.PLUS); }
+	"&&" { return symbol("AND", sym.AND); }
+	"||" { return symbol("OR", sym.OR); }
 	{Identifier} { return symbol("NAME",sym.NAME, yytext()); }
 	{DecLiteral} { return symbol("INT_CONST", sym.INT_CONST, Integer.parseInt(yytext())); }
     {DoubleLiteral} { return symbol("DOUBLE_CONST",sym.DOUBLE_CONST, Double.parseDouble(yytext())); }
