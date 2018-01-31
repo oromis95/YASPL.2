@@ -35,7 +35,7 @@ head
     };
     def fibonacci(int end;): int result;
     {
-        int a,b,temp,count,result;
+        int a,b,temp,count;
         a=1;
         b=1;
         count=0;
@@ -47,7 +47,8 @@ head
             " "->;
             count=count+1;
         };
-        result=a;
+        result=4;
+
     };
 start
 choice=0;

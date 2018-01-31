@@ -1,246 +1,117 @@
 #include<stdio.h>
 #include <stdbool.h>
-void addInt(int*);
-void addDouble(double*);
-void subtractionInt(int*);
-void subtractionDouble(double*);
-void moltiplicationInt(int*);
-void moltiplicationDouble(double*);
-void divisionInt(int*);
-void divisionDouble(double*);
+void addInt(int,int,int*);
+void moltiplicationInt(int,int,int*);
+void divisionInt(int,int,int*);
+void powFunc(int,int,int*);
+void fibonacci(int,int*);
 int choice,intResult;
-double doubleResult;
-int operativeChoice;
-void addInt(int* intSumOUT)
+int num1,num2;
+void addInt(int intAdded1,int intAdded2,int* intSumOUT)
 {
-int intAdded,intSum;
-intAdded = -99999;
-intSum = 0;
-printf("Somma di interi \n" );
-printf("Inserisca un numero. \n" );
-scanf("%d" ,&intAdded) ;
-
-while (!(intAdded == 0) )
-{
-intSum = intSum + intAdded;
-printf("Inserisca un altro numero, inserisca zero se vuole finire \n" );
-scanf("%d" ,&intAdded) ;
-
-
-}
+int intSum;
+intSum = intAdded1 + intAdded2;
 *intSumOUT=intSum;
 
 }
-void addDouble(double* doubleSumOUT)
+void moltiplicationInt(int intMoltiplicator1,int intMoltiplicator2,int* intProductOUT)
 {
-double doubleAdded,doubleSum;
-doubleAdded = -99999;
-doubleSum = 0;
-printf("Somma di double \n" );
-printf("Inserisca un numero. \n" );
-scanf("%lf" ,&doubleAdded) ;
-
-while (!(doubleAdded == 0) )
+int intProduct,count;
+intProduct = 0;
+count = 0;
+while (!(count == intMoltiplicator2) )
 {
-doubleSum = doubleSum + doubleAdded;
-printf("Inserisca un altro numero, inserisca zero se vuole finire \n" );
-scanf("%lf" ,&doubleAdded) ;
-
-
-}
-*doubleSumOUT=doubleSum;
-
-}
-void subtractionInt(int* intRemainderOUT)
-{
-int intAmount,intRemainder;
-intAmount = -99999;
-intRemainder = 0;
-printf("Sottrazione di interi \n" );
-printf("Inserisca un numero. \n" );
-scanf("%d" ,&intRemainder) ;
-
-scanf("%d" ,&intAmount) ;
-
-while (!(intAmount == 0) )
-{
-intRemainder = intRemainder - intAmount;
-printf("Inserisca un altro numero, inserisca zero se vuole finire \n" );
-scanf("%d" ,&intAmount) ;
-
-
-}
-*intRemainderOUT=intRemainder;
-
-}
-void subtractionDouble(double* doubleRemainderOUT)
-{
-double doubleAmount,doubleRemainder;
-doubleAmount = -99999;
-doubleRemainder = 0;
-printf("Sottrazione di Double \n" );
-printf("Inserisca un numero. \n" );
-scanf("%lf" ,&doubleRemainder) ;
-
-scanf("%lf" ,&doubleAmount) ;
-
-while (!(doubleAmount == 0) )
-{
-doubleRemainder = doubleRemainder - doubleAmount;
-printf("Inserisca un altro numero, inserisca zero se vuole finire \n" );
-scanf("%lf" ,&doubleAmount) ;
-
-
-}
-*doubleRemainderOUT=doubleRemainder;
-
-}
-void moltiplicationInt(int* intProductOUT)
-{
-int intMoltiplicator,intProduct;
-intMoltiplicator = -99999;
-intProduct = 1;
-printf("Moltiplicazione di interi \n" );
-printf("Inserisca un numero. \n" );
-scanf("%d" ,&intMoltiplicator) ;
-
-while (!(intMoltiplicator == 0) )
-{
-intProduct = intProduct * intMoltiplicator;
-printf("Inserisca un altro numero, inserisca zero se vuole finire \n" );
-scanf("%d" ,&intMoltiplicator) ;
-
+addInt(intProduct,intMoltiplicator1,&intProduct);
+count = count + 1;
 
 }
 *intProductOUT=intProduct;
 
 }
-void moltiplicationDouble(double* doubleProductOUT)
+void divisionInt(int div1,int div2,int* intQuotientOUT)
 {
-double doubleMoltiplicator,doubleProduct;
-doubleMoltiplicator = -99999;
-doubleProduct = 1;
-printf("Moltiplicazione di double \n" );
-printf("Inserisca un numero. \n" );
-scanf("%lf" ,&doubleMoltiplicator) ;
-
-while (!(doubleMoltiplicator == 0) )
-{
-doubleProduct = doubleProduct * doubleMoltiplicator;
-printf("Inserisca un altro numero, inserisca zero se vuole finire \n" );
-scanf("%lf" ,&doubleMoltiplicator) ;
-
-
-}
-*doubleProductOUT=doubleProduct;
-
-}
-void divisionInt(int* intQuotientOUT)
-{
-int intDivider,intQuotient;
-intDivider = -99999;
-intQuotient = 1;
-printf("Divisione di interi \n" );
-printf("Inserisca dividendo e divisore.\n" );
-scanf("%d" ,&intQuotient) ;
-
-scanf("%d" ,&intDivider) ;
-
-while (!(intDivider == 0) )
-{
-intQuotient = intQuotient / intDivider;
-printf("Inserisca un altro numero, inserisca zero se vuole finire \n" );
-scanf("%d" ,&intDivider) ;
-
-
-}
+int intQuotient;
+intQuotient = div1 / div2;
 *intQuotientOUT=intQuotient;
 
 }
-void divisionDouble(double* doubleQuotientOUT)
+void powFunc(int base,int exponent,int* intPowOUT)
 {
-double doubleDivider,doubleQuotient;
-doubleDivider = -99999;
-doubleQuotient = 1;
-printf("Divisione di Double \n" );
-printf("Inserisca dividendo e divisore. \n" );
-scanf("%lf" ,&doubleQuotient) ;
-
-scanf("%lf" ,&doubleDivider) ;
-
-while (!(doubleDivider == 0) )
+int intPow,count,temp;
+count = 0;
+intPow = 1;
+while (!(count == exponent) )
 {
-doubleQuotient = doubleQuotient / doubleDivider;
-printf("Inserisca un altro numero, inserisca zero se vuole finire \n" );
-scanf("%lf" ,&doubleDivider) ;
-
+moltiplicationInt(intPow,base,&intPow);
+count = count + 1;
 
 }
-*doubleQuotientOUT=doubleQuotient;
+*intPowOUT=intPow;
+
+}
+void fibonacci(int end,int* resultOUT)
+{
+int a,b,temp,count;
+a = 1;
+b = 1;
+count = 0;
+while (!(count == end) )
+{
+temp = a + b;
+b = a;
+a = temp;
+printf("%d\n",a) ;printf(" \n" );
+count = count + 1;
+
+}
+result = 4;
+*resultOUT=result;
 
 }
 
 int main(){choice = 0;
 while (!(choice == -1) )
 {
-printf("Scrivi il simbolo per effetture l'operazione decisa  I simboli possibili sono :  0 Addizione 1 Sottrazione 2 Moltiplicazione 3 Divisione Inserica -1 per terminare \n" );
+printf("  0 Addizione 1  Moltiplicazione 2 Divisione 3 Potenza \n" );
 scanf("%d" ,&choice) ;
 
 if(choice == 0)
-{printf("Vuoi lavorare con interi o double? 0 per interi 1 per double \n" );
-scanf("%d" ,&operativeChoice) ;
+{printf("Inserisci i due numeri : \n" );
+scanf("%d" ,&num1) ;
 
-if(operativeChoice == 0)
-{addInt(&intResult);
-printf("Risultato \n" );
-printf("%d\n",intResult) ;} else{if(operativeChoice == 1)
-{addDouble(&doubleResult);
-printf("Risultato \n" );
-printf("%f\n",doubleResult) ;} else{printf("Comando non riconosciuto \n" );
-} 
-} 
-} else{if(choice == 1)
-{printf("Vuoi lavorare con interi o double? INTERI per interi DOUBLE per double \n" );
-scanf("%d" ,&operativeChoice) ;
+scanf("%d" ,&num2) ;
 
-if(operativeChoice == 0)
-{subtractionInt(&intResult);
+addInt(num1,num2,&intResult);
 printf("Risultato \n" );
-printf("%d\n",intResult) ;} else{if(operativeChoice == 1)
-{subtractionDouble(&doubleResult);
-printf("Risultato \n" );
-printf("%f\n",doubleResult) ;} else{printf("Comando non riconosciuto \n" );
-} 
-} 
-} else{if(choice == 2)
-{printf("Vuoi lavorare con interi o double? INTERI per interi DOUBLE per double \n" );
-scanf("%d" ,&operativeChoice) ;
+printf("%d\n",intResult) ;} else{if(choice == 1)
+{printf("Inserisci i due numeri : \n" );
+scanf("%d" ,&num1) ;
 
-if(operativeChoice == 0)
-{moltiplicationInt(&intResult);
-printf("Risultato \n" );
-printf("%d\n",intResult) ;} else{if(operativeChoice == 1)
-{moltiplicationDouble(&doubleResult);
-printf("Risultato \n" );
-printf("%f\n",doubleResult) ;} else{printf("Comando non riconosciuto \n" );
-} 
-} 
-} else{if(choice == 3)
-{printf("Vuoi lavorare con interi o double? INTERI per interi DOUBLE per double \n" );
-scanf("%d" ,&operativeChoice) ;
+scanf("%d" ,&num2) ;
 
-if(operativeChoice == 0)
-{divisionInt(&intResult);
+moltiplicationInt(num1,num2,&intResult);
 printf("Risultato \n" );
-printf("%d\n",intResult) ;} else{if(operativeChoice == 1)
-{divisionDouble(&doubleResult);
+printf("%d\n",intResult) ;} else{if(choice == 2)
+{printf("Inserisci i due numeri : \n" );
+scanf("%d" ,&num1) ;
+
+scanf("%d" ,&num2) ;
+
+divisionInt(num1,num2,&intResult);
 printf("Risultato \n" );
-printf("%f\n",doubleResult) ;} else{printf("Comando non riconosciuto \n" );
-} 
-} 
-} else{if(choice == -1)
-{printf("finito\n" );
-} else{printf("Comando non riconosciuto \n" );
+printf("%d\n",intResult) ;} else{if(choice == 3)
+{printf("Inserisci prima la base poi l'esponente \n" );
+scanf("%d" ,&num1) ;
+
+scanf("%d" ,&num2) ;
+
+powFunc(num1,num2,&intResult);
+printf("Risultato \n" );
+printf("%d\n",intResult) ;} else{if(choice == 4)
+{printf("Inserisca quanti numeri di fibonacci vuole \n" );
+scanf("%d" ,&num1) ;
+
+fibonacci(num1,&intResult);
 } 
 } 
 } 

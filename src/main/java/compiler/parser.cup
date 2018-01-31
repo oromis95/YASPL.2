@@ -202,6 +202,7 @@ Stat ::= Comp_stat:cs {: RESULT = cs; :}
 
 Simple_stat ::= Vars:vs READ Types:tps SEMI  {: RESULT = new ReadStatement(vs, tps); :}
 			| Out_values:ov WRITE SEMI {: RESULT = new WriteStatement(ov); :}
+			| NAME:name ASSIGN Bool_expr:bool_expr SEMI{:RESULT=new AssignStatement(new Identifier(name),bool_expr);:}
 			| NAME:name ASSIGN Expr:expr SEMI  {: RESULT = new AssignStatement(new Identifier(name), expr); :}
 			| NAME:name LPAR Func_exprs:fe COLON Vars:vs RPAR SEMI
 			        {:
@@ -269,6 +270,9 @@ Arith_op ::= PLUS {: RESULT = "PLUS"; :}
 Bool_expr ::= TRUE {: RESULT = new TrueExpression(); :}
 			|FALSE {: RESULT = new FalseExpression(); :}
 			|Bool_expr:b1 Bool_op:bo Bool_expr:b2 {: RESULT = new RelationalExpression(b1, b2, bo); :}
+			|Expr:n1 Bool_op:bo Expr:n2 {:RESULT = new RelationalExpression(n1, n2, bo);:}
+			|Bool_expr:e1 Bool_op:bo Expr:e2 {:RESULT = new RelationalExpression(e1, e2, bo);:}
+			|Expr:e1 Bool_op:bo Bool_expr:e2 {:RESULT = new RelationalExpression(e1, e2, bo);:}
 			|NOT Bool_expr:expr {: RESULT = new NotExpression(expr); :}
 			|Expr:r1 Rel_op:ro Expr:r2 {: RESULT = new RelationalExpression(r1, r2, ro);:}
 			|LPAR Bool_expr:be RPAR {: RESULT = be; :}	/*Modifica Grammatica */
