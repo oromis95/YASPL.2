@@ -1,0 +1,7 @@
+head
+def foo():string s;{
+int a;
+a=7;
+};
+start
+"hello"->;

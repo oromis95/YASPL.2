@@ -1,12 +1,11 @@
 package visitors.codeGenerator;
 
 import visitors.Visitor;
+import visitors.nodes.*;
 import visitors.semantic.Constants;
 import visitors.semantic.EntrySymbol;
 import visitors.semantic.SymbolTable;
-import visitors.syntax.nodes.*;
 
-import java.util.Collections;
 import java.util.Stack;
 
 /**
@@ -186,7 +185,12 @@ public class CodeVisitor implements Visitor<String, String> {
         //Collections.reverse(readStatementNode.getVariables());
         String temp = "";
         for (Variable v : readStatementNode.getVariables()) {
-            String thisType = stackOfTable.peek().get(v.getIdentifier().getName()).getType();
+            String thisType;
+            if(checkIsExestingInScope(v.getIdentifier().getName())) {
+                thisType= stackOfTable.peek().get(v.getIdentifier().getName()).getType();
+            }else {
+                thisType= stackOfTable.firstElement().get(v.getIdentifier().getName()).getType();
+            }
             if (thisType.equals(Constants.INTEGER))
                 temp = "scanf(\"%d\" ,&" + v.getIdentifier().getName() + ") ;";
             else if (thisType.equals(Constants.DOUBLE)) {

@@ -3,9 +3,9 @@ package visitors.semantic;
 import visitors.Visitor;
 import visitors.lexical.EntryLexem;
 import visitors.lexical.StringTable;
+import visitors.nodes.*;
 import visitors.semantic.exception.*;
-import visitors.syntax.Entry;
-import visitors.syntax.nodes.*;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -177,10 +177,14 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
 
                 typesOfConstants.add(stackOfTable.peek().get(v.getIdentifier().getName()).getType());
             } else {
-                try {
-                    throw new VariableNotDeclaredException(v.getIdentifier().getName() + " not declared yet");
-                } catch (VariableNotDeclaredException e) {
-                    e.printStackTrace();
+                if (stackOfTable.firstElement().containsKey(v.getIdentifier().getName())) {
+                    typesOfConstants.add(stackOfTable.firstElement().get(v.getIdentifier().getName()).getType());
+                } else {
+                    try {
+                        throw new VariableNotDeclaredException(v.getIdentifier().getName() + " not declared yet");
+                    } catch (VariableNotDeclaredException e) {
+                        System.out.println("Variable not declared yet");
+                    }
                 }
             }
             continue;
@@ -200,7 +204,21 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
     @Override
     public EntrySymbol visit(WriteStatement writeStatementNode, EntrySymbol optParam) {
         Collections.reverse(writeStatementNode.getExpression());
-        writeStatementNode.getExpression().forEach(e -> e.accept(this, optParam));
+        //writeStatementNode.getExpression().forEach(e -> e.accept(this, optParam));
+        for (Expression e : writeStatementNode.getExpression()) {
+            optParam = e.accept(this, optParam);
+            if (optParam.getType() == null) {
+                if (checkIsExestingInScope(optParam.getName()) || checkIsExistingGlobal(optParam.getName())) {
+
+                } else {
+                    try {
+                        throw new VariableNotDeclaredException("Variable Not declared");
+                    } catch (VariableNotDeclaredException e1) {
+                        System.out.println("Variable not declared");
+                    }
+                }
+            }
+        }
         return null;
     }
 
@@ -313,7 +331,15 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
             if (a) {
                 rightType = stackOfTable.peek().get(id).getType();
             } else {
-                rightType = stackOfTable.firstElement().get(id).getType();
+                if (checkIsExistingGlobal(id)) {
+                    rightType = stackOfTable.firstElement().get(id).getType();
+                } else {
+                    try {
+                        throw new VariableNotDeclaredException("Variable not declared");
+                    } catch (VariableNotDeclaredException e) {
+                        System.out.println("Variable not declared");
+                    }
+                }
             }
 
         } else {
@@ -419,9 +445,34 @@ public class SemanticVisitor implements Visitor<EntrySymbol, EntrySymbol> {
     @Override
     public EntrySymbol visit(AssignStatement assignStatementNode, EntrySymbol optParam) {
         EntrySymbol currEntry = stackOfTable.peek().get(assignStatementNode.getIdentifier().getName());
+        if (currEntry == null) {
+            if (checkIsExistingGlobal(assignStatementNode.getIdentifier().getName())) {
+                currEntry = stackOfTable.firstElement().get(assignStatementNode.getIdentifier().getName());
+            } else {
+                try {
+                    throw new VariableNotDeclaredException("Variable not declared");
+                } catch (VariableNotDeclaredException e) {
+                    System.out.println("Variable not declared");
+                    return null;
+                }
+            }
+        }
         EntrySymbol otherEntry = assignStatementNode.getExpression().accept(this, optParam);
         if (otherEntry.getType() == null) {
-            otherEntry = stackOfTable.peek().get(otherEntry.getName());
+            if (checkIsExestingInScope(otherEntry.getName())) {
+                otherEntry = stackOfTable.peek().get(otherEntry.getName());
+            } else {
+                if (checkIsExistingGlobal(otherEntry.getName())) {
+                    otherEntry = stackOfTable.firstElement().get(otherEntry.getName());
+                } else {
+                    try {
+                        throw new VariableNotDeclaredException("Variable not declared");
+                    } catch (VariableNotDeclaredException e) {
+                        System.out.println("Variable not declared");
+                        return null;
+                    }
+                }
+            }
         }
         if (currEntry.getType().equals(otherEntry.getType())) {
 

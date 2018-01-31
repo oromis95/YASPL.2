@@ -1,0 +1,15 @@
+head
+def foo(): int a; {
+
+    int a,c;
+    c=4;
+
+};
+
+def foo2():int b;{
+
+    c=5;
+
+};
+start
+"hello"->;
