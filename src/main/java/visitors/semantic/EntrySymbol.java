@@ -21,6 +21,7 @@ public class EntrySymbol {
     private int dim = 0;
     private boolean isFunction = false;
     private boolean isParameter = false;
+    private SymbolTable insideScope;
 
     public EntrySymbol() {
     }
@@ -70,6 +71,7 @@ public class EntrySymbol {
         this.variableArrayType = new ArrayList<>();
         this.parameterArrayType = new ArrayList<>();
         isFunction = true;
+        insideScope = new SymbolTable();
     }
 
     public ArrayList<String> getVariableArrayFirm() {
@@ -98,6 +100,14 @@ public class EntrySymbol {
 
     public boolean isParameter() {
         return isParameter;
+    }
+
+    public SymbolTable getInsideScope() {
+        return insideScope;
+    }
+
+    public void setInsideScope(SymbolTable insideScope) {
+        this.insideScope = insideScope;
     }
 
     @Override

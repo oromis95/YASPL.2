@@ -1,0 +1,9 @@
+head
+int result;
+	def divisionInt(int div1,div2;): int intQuotient;
+    	{
+    		int  intQuotientWeird;
+            intQuotientWeird=div1/div2;
+    	};
+start
+divisionInt(10,5:result);

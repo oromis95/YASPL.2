@@ -1,0 +1,9 @@
+head
+int risultato;
+def raddoppio(int a;] : int b;{
+int b;
+b=2*a;
+};
+start
+raddoppio(4:risultato);
+risultato->;

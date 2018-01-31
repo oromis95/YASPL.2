@@ -1,0 +1,15 @@
+head
+int result;
+def moltiplicationInt(int intMoltiplicator1,intMoltiplicator2): int intProduct;
+	{
+		int intProduct,count;
+		intProduct=0;
+        count=0;
+		while(not(count==intMoltiplicator2))
+		{
+		    addInt(intProduct,intMoltiplicator1:intProduct);
+		    count=count+1;
+		};
+	};
+start
+moltiplicationInt(7,8:result);

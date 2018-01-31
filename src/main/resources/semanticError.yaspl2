@@ -1,0 +1,7 @@
+head
+int a;
+string c,result;
+start
+a=7;
+c="ciao";
+result=a+c;

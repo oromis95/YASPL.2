@@ -61,8 +61,8 @@
                                 <property name="runtime" value="${nz.ac.waikato.cms.weka.thirdparty:java-cup-11b-runtime:jar}"/>
                                 <taskdef  name="jflex" classname="jflex.anttask.JFlexTask"   classpath="${flex}"   />
                                 <taskdef  name="cup"   classname="java_cup.anttask.CUPTask"  classpath="${cup}"  />
-                                <jflex  file="${project.build.sourceDirectory}\com\oromis\lexer.flex" destdir="${project.build.sourceDirectory}" />
-                                <cup srcfile="${project.build.sourceDirectory}\com\oromis\parser.cup" destdir="${project.build.sourceDirectory}"
+                                <jflex  file="${project.build.sourceDirectory}\compiler\lexer.flex" destdir="${project.build.sourceDirectory}" />
+                                <cup srcfile="${project.build.sourceDirectory}\compiler\parser.cup" destdir="${project.build.sourceDirectory}"
                                      parser="Parser" interface="true" />
                             </target>
                         </configuration>

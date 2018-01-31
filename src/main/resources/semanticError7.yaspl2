@@ -1,0 +1,8 @@
+head
+int a;
+def foo():string s;{
+string s,c;
+a<-int;
+};
+start
+a<-int;
