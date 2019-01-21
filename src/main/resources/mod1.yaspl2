@@ -4,5 +4,6 @@ start
 a1=true;
 a2=false;
 b = a1 || a2;
-c = 1 || a2 ;
-c->;
+c = 10 > 5;
+f= c && b;
+f->;
